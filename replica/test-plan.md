@@ -36,7 +36,7 @@ outside the repo; findings are in `bugs.md`.
 | F04-E4 | export | edge | Settings, Export my data | chowk-export.json downloads, toast "Exported" | browser | pass |
 | F05-H1 | measure | happy | right click, Measure distance, two taps | line with a distance label, Esc clears | browser | pass |
 | F05-E1 | measure one point | edge | one tap only | no label, no error | browser | pass |
-| F06-H1 | layers | happy | Layers, Quiet streets | noise ramp on roads, row checked | browser | pass |
+| F06-H1 | layers | happy | Layers, Quiet streets | noise ramp on roads, row checked, trunk roads differ from lanes | browser | pass |
 | F06-E1 | layer persistence | edge | toggle, reload | choice persists in localStorage | browser | pass |
 | F06-E2 | pixel map | edge | Layers, Pixel map | coarse blocks, marker still clickable | browser | pass |
 | G01 | place card | happy | place panel, Card, Download PNG | 1520 square PNG, correct title and note | browser | pass |

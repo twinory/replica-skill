@@ -183,6 +183,28 @@ Actual: blank panel; console `cuisines is not defined` (same as 003).
 Evidence: mobile screenshot, console error.
 Status: fixed with BUG-003, re-verified on the mobile viewport.
 
+### BUG-011: Quiet layer painted every street the same middling colour
+
+- Severity: S2
+- Flow / case: F06-H1
+- Screen: S01 with the quiet layer on
+
+Steps
+1. Layers, Quiet streets.
+2. Look at a trunk road and a residential lane side by side.
+
+Expected: the trunk road in marigold, the lane in green.
+Actual: every road the same colour. Routed noise numbers were correct, so the
+route comparison worked while the map lied about which streets are loud.
+Evidence: a pixel census of the map area showed one bucket where a ramp
+should be; after the fix, 147 distinct buckets.
+Suspected cause: `roads.json` carries the grade as `z`, and `loadWorld` built
+road objects without copying it. The renderer then fell back to 50 for all
+395 ways. `node --check` cannot see a missing field, and the route numbers
+come from `graph.json` edges, so the bug hid in the gap between two datasets.
+Status: fixed, `noise: r.z` on the road object, and `tools/check.mjs` now
+asserts that every road has a grade.
+
 ## To check, not reproduced
 
 - The scale bar is correct on resize but has not been checked after a

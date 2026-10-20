@@ -82,7 +82,7 @@ export async function loadWorld(base = './data/') {
       if (p[0] > bounds[2]) bounds[2] = p[0];
       if (p[1] > bounds[3]) bounds[3] = p[1];
     }
-    return { id: r.i, cls: r.c, name: r.n >= 0 ? roads.names[r.n] : '', n: r.n, pts, ll: r.p, bounds };
+    return { id: r.i, cls: r.c, name: r.n >= 0 ? roads.names[r.n] : '', n: r.n, pts, ll: r.p, bounds, noise: r.z };
   });
   world.roadNames = roads.names;
 
