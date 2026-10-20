@@ -1,0 +1,20 @@
+{
+  "avoid": [
+    "Google Maps",
+    "Google",
+    "Alphabet"
+  ],
+  "app_store": {
+    "name": "Chowk: calm city routes",
+    "subtitle": "Quiet streets, open survey",
+    "promotional_text": "New: a field card for every place. Save the street plan, the calm score and your own note as one image.",
+    "description": "Chowk is a survey of central Bengaluru that routes you by how a street feels, not just how fast it moves.\n\nEvery street in the survey carries a noise grade. Pick a route and you see the average, next to the quietest option, before you walk it. Turn on the quiet layer and the map shows which lanes are calm and which are not.\n\nWhat you can do:\n- Search shops, streets and metro stations, and browse twelve categories\n- Walk, cycle, drive or take the metro, with fares and step free options\n- See a noise comparison on every route, and a calm score on every place\n- Save places to lists and keep a private note on each one\n- Report a broken pavement or an unsafe crossing, and mark it fixed when it is\n- Print a field card: a drawn street plan, the calm score and your note\n\nWhat Chowk does not do: no advertising, no sponsored pins, no star ratings, no tracking. Your saved places and notes stay in this browser, and you can export them as a JSON file at any time.\n\nThe map is drawn from OpenStreetMap data, credited to its contributors under the ODbL licence. The survey covers central Bengaluru only; outside it the app says so rather than guessing.\n\nTimes are estimates from a typical weekday pattern, not live traffic.",
+    "keywords": "walking,cycling,metro,bengaluru,noise,street,accessibility,transit,parks,offline",
+    "whats_new": "Field cards, a calm score on every place, and step free routing."
+  },
+  "google_play": {
+    "title": "Chowk: calm city routes",
+    "short_description": "Quiet streets, metro and routes without steps in central Bengaluru.",
+    "full_description": "Chowk is a survey of central Bengaluru that routes you by how a street feels, not just how fast it moves.\n\nEvery street carries a noise grade. Pick a route and you see its average next to the quietest option, before you walk it. The quiet layer paints the map by calmness.\n\nWalk, cycle, drive or take the metro, with fares, step free options and a time of day estimate. Save places to lists, keep a private note on each, report a broken pavement, and print a field card.\n\nNo advertising, no sponsored pins, no star ratings. Your places stay in this browser and export as JSON. The map is drawn from OpenStreetMap data, credited under the ODbL licence, and covers central Bengaluru only."
+  }
+}

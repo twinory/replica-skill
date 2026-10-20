@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Chowk: a survey of central Bengaluru</title>
+  <meta name="description" content="Chowk is a map of central Bengaluru built from open survey data, with quiet routes, a fixes layer for broken streets, and notes on the places you visit.">
+  <meta name="theme-color" content="#fffcf4">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app">
+    <aside class="panel" id="panel" aria-label="Chowk panel">
+      <div class="skeleton" style="padding-top:28px">
+        <div class="sk-line" style="width:42%"></div>
+        <div class="sk-line" style="width:78%;height:40px;margin-top:20px"></div>
+        <div class="sk-line" style="width:100%;height:16px;margin-top:26px"></div>
+        <div class="sk-line" style="width:64%"></div>
+        <div class="sk-line" style="width:88%"></div>
+      </div>
+    </aside>
+
+    <main class="map-wrap" id="map-layer">
+      <canvas id="map" role="application" tabindex="0"
+        aria-label="Map of central Bengaluru. Use arrow keys to pan, plus and minus to zoom. Press Shift L for a text list of every place."></canvas>
+      <div class="paper-grain" aria-hidden="true"></div>
+
+      <div class="map-top">
+        <div class="map-badge" id="survey-pill">
+          <span class="pulse" aria-hidden="true"></span>
+          <span id="survey-label">Survey 20 Oct 2026</span>
+          <span class="badge-sep" aria-hidden="true"></span>
+          <button class="badge-btn" data-act="list" aria-label="List view of every place" title="List view (Shift L)">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.1M3.5 12h.1M3.5 18h.1"/></svg>
+            List
+          </button>
+        </div>
+        <div class="map-tools" id="map-tools">
+          <div class="tool-group">
+            <button class="icon-btn" data-act="palette" aria-label="Search and commands" title="Search and commands (Ctrl K)">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14M20.5 20.5l-4.2-4.2"/></svg>
+            </button>
+            <button class="icon-btn" data-act="layers" aria-label="Map layers" title="Layers">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>
+            </button>
+            <button class="icon-btn" data-act="measure" aria-label="Measure distance" title="Measure (M)">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l6-6 12 12-6 6zM7 7l2 2M10 4l2 2M13 7l2 2M16 10l2 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="compass" data-act="compass" aria-label="Compass, north is up" title="North" id="compass" style="display:none">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3 15 12l-3 9-3-9z" fill="currentColor" fill-opacity=".12"/>
+          <path d="M12 3 15 12h-6z" fill="currentColor" stroke="none"/>
+          <text x="12" y="7.4" text-anchor="middle" font-size="5" font-family="Inter, sans-serif" font-weight="700" fill="currentColor" stroke="none">N</text>
+        </svg>
+      </button>
+
+      <div class="map-bottom-right" id="map-bottom-right">
+        <button class="locate-btn" data-act="locate" aria-label="Find my location" title="Find my location (L)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12M12 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/></svg>
+        </button>
+        <div class="map-controls">
+          <button class="icon-btn" data-act="zoom-in" aria-label="Zoom in" title="Zoom in (+)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <button class="icon-btn" data-act="zoom-out" aria-label="Zoom out" title="Zoom out (-)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 12h14"/></svg>
+          </button>
+          <button class="icon-btn" data-act="fit" aria-label="Fit the survey area" title="Fit the survey (0)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="map-bottom-left">
+        <div class="scale" id="scale" aria-hidden="true">
+          <span id="scale-bar" class="scale-bar" style="width:60px"></span>
+          <span id="scale-text">200 m</span>
+        </div>
+        <div class="attrib">
+          Survey data <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>, ODbL.
+          Drawn from the data, no map tiles.
+        </div>
+      </div>
+
+      <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <div class="toast-wrap" id="toast-wrap" role="status" aria-live="polite"></div>
+
+  <div class="boot" id="boot">
+    <div class="boot-inner">
+      <div class="boot-mark">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/></svg>
+      </div>
+      <div class="boot-title">Chowk</div>
+      <div class="boot-sub">Opening the survey of central Bengaluru</div>
+    </div>
+  </div>
+
+  <noscript>
+    <div style="padding:32px;font-family:system-ui">Chowk draws its map in the browser and needs JavaScript. The data is still readable as JSON in the app's data folder.</div>
+  </noscript>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

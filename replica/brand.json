@@ -1,0 +1,25 @@
+{
+  "name": "Chowk",
+  "avoid": [
+    "Google Maps",
+    "Google",
+    "Maps",
+    "Street View"
+  ],
+  "domains": [
+    "google.com",
+    "google.co.in",
+    "maps.google.com",
+    "goo.gl"
+  ],
+  "colors": [
+    "#4285F4",
+    "#EA4335",
+    "#FBBC04",
+    "#34A853",
+    "#1A73E8",
+    "#5F6368",
+    "#202124"
+  ],
+  "note": "Sweep is run on app/ and tools/, the product. The skill pack's own files talk about Google Play and review sources on purpose and are not shipped. 'g.co' and 'Alphabet' were dropped from the pattern list because the sweep matches substrings: they fire on '${g.color}' and on the canvas keyword 'alphabetic', which are not brand leftovers."
+}

@@ -1,0 +1,51 @@
+{
+ "app": "Chowk",
+ "area": "Central Bengaluru",
+ "bounds": [
+  77.5898,
+  12.9707,
+  77.6112,
+  12.9819
+ ],
+ "center": [
+  77.6005,
+  12.9763
+ ],
+ "counts": {
+  "roads": 395,
+  "edges": 904,
+  "nodes": 641,
+  "places": 566,
+  "buildings": 878,
+  "parks": 69,
+  "water": 1,
+  "metro": 23
+ },
+ "classes": [
+  "primary",
+  "secondary",
+  "tertiary",
+  "residential",
+  "service",
+  "path"
+ ],
+ "edge_fields": [
+  "a",
+  "b",
+  "metres",
+  "class",
+  "name",
+  "modes",
+  "oneway",
+  "steps",
+  "noise"
+ ],
+ "mode_bits": {
+  "drive": 1,
+  "bike": 2,
+  "walk": 4
+ },
+ "source": "OpenStreetMap contributors, ODbL 1.0",
+ "extract": "tools/data/sample_bengaluru.osm",
+ "built": "2026-10-20"
+}

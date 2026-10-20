@@ -1,0 +1,38 @@
+feature,area,priority,original,clone,notes
+Pan and zoom a vector map with labels,map canvas,must,yes,yes,drawn from OpenStreetMap polygons and lines; no map tiles
+Search places streets and stations,search,must,yes,yes,fuzzy match with word boundaries and category awareness
+See results ranked by distance from the map centre,search,must,yes,yes,
+Read a place panel with kind hours and address,place panel,must,yes,yes,includes step free tag and OSM record link
+Get directions between two points,directions,must,yes,yes,A star over the surveyed street graph
+Switch travel mode between walk cycle and drive,directions,must,yes,yes,each mode has its own graph access rules
+Metro trip with walking legs and a fare,directions,must,yes,yes,Purple and Green lines with one interchange
+See alternatives and pick one,route on map,must,yes,yes,fastest plus quietest or step free where the graph allows
+Save a place to a list,saved,must,yes,yes,lists with colour and rename
+See nearest places with open state in a list,search,must,yes,yes,
+Right click a point for actions,context menu,must,yes,yes,start here go here measure report copy
+Measure distance between points,context menu,should,yes,yes,
+Change the map layer,layers,should,yes,yes,quiet busy transit parks step free pixel compass
+Zoom scale bar and attribution,map canvas,should,yes,yes,scale recomputes per latitude
+Keyboard shortcuts with a list,map canvas,should,yes,yes,slash to search ctrl k palette arrows to pan
+List view for screen readers,accessibility,should,yes,yes,table of every place nearest first
+Local search and command palette,search,should,yes,yes,places roads stations and commands in one box
+Notes on a place,saved,should,yes,yes,"new: saves as you type,  stored in this browser"
+Opening hours with open now and a full week table,place panel,should,yes,yes,small parser for OSM opening_hours
+Print the current view,map canvas,could,yes,yes,"still image of the map with legend, centre and attribution; Ctrl P; card prints separately"
+Offline working with no network,map canvas,could,yes,yes,"all data local,  saved places and notes in localStorage"
+Share a link to a place or a route,sharing,could,yes,yes,copy or the Web Share API
+Light dark high contrast themes,settings,could,yes,yes,auto follows the system
+Street view imagery,street view,must,yes,skip,photographs of every street are licensed content the original owns
+Live traffic from probe data,live layer,must,yes,skip,Google's own user data; replaced with a published peak hour curve
+Ratings and review text,place panel,must,yes,skip,user generated content is not a feature to rebuild; the clone has no stars
+Popular times and busyness,place panel,should,yes,skip,derived from the original's location history
+Place photos,place panel,must,yes,skip,owned and licensed imagery
+Real time transit departures,transit,must,yes,skip,needs the operator's live feed
+Quiet streets layer with measured noise,new: quiet routes,must,no,yes,added by this clone: per segment noise estimate and a noise weighted route
+Fixes layer for broken pavements and unsafe crossings,new: fixes,must,no,yes,"added by this clone: report it,  it stays on the map until marked fixed"
+Calm score on every place,new: quiet routes,should,no,yes,"added by this clone: local estimate,  always labelled as an estimate"
+Field card poster for a place,new: sharing,should,no,yes,added by this clone: printable PNG with a drawn street plan and your note
+Step free routing and a step free place filter,new: access,must,no,yes,"added by this clone: avoid steps,  filter to wheelchair yes"
+Time of day slider that changes drive times,new: time,direction,no,yes,"added by this clone: typical weekday curve,  not live"
+Accessibility outreach list,new: access,could,no,yes,"added by this clone: who to ask before you go,  and what they said"
+Pixel map mode,new: map canvas,could,no,yes,added by this clone: low resolution view for clarity and fun

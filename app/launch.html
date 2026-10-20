@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chowk, route by how a street feels</title>
+<meta name="description" content="Chowk is a survey of central Bengaluru with a noise grade on every street. Two routes, two numbers, your pick.">
+<link rel="icon" href="assets/favicon.svg">
+<style>
+  @font-face { font-family: "Inter"; src: url("assets/fonts/inter.woff2") format("woff2-variations"); font-weight: 100 900; font-display: swap; }
+  @font-face { font-family: "Fraunces"; src: url("assets/fonts/fraunces.woff2") format("woff2-variations"); font-weight: 100 900; font-display: swap; }
+  :root {
+    --bg: #f3eada; --surface: #fffcf4; --surface-2: #f8f1e3; --border: #e2d5c0;
+    --text: #1b1815; --muted: #6d6152; --accent: #0b6e4f; --accent-strong: #08543c;
+    --accent-soft: #dcebe0; --on-accent: #fffcf4; --marigold: #b03a0a;
+    --ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --display: "Fraunces", ui-serif, Georgia, serif;
+    --r: 14px; --max: 1120px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); font-family: var(--ui);
+    font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent-strong); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  img { max-width: 100%; display: block; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+  .mark {
+    width: 34px; height: 34px; border-radius: 10px; background: var(--accent);
+    display: grid; place-items: center; color: var(--on-accent);
+  }
+  .brand-name { font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: .01em; }
+  .brand-tag { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  nav.top-links { display: flex; gap: 20px; font-size: 14px; }
+  nav.top-links a { color: var(--muted); text-decoration: none; }
+  nav.top-links a:hover { color: var(--text); }
+
+  .hero { padding: 56px 0 40px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 48px; align-items: center; }
+  .eyebrow { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  h1 {
+    font-family: var(--display); font-weight: 600; font-size: clamp(38px, 5.4vw, 62px);
+    line-height: 1.03; letter-spacing: -.015em; margin: 12px 0 16px;
+  }
+  .lede { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 26px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px; min-height: 48px; padding: 0 22px;
+    border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent);
+    font: 600 15px/1 var(--ui); text-decoration: none; cursor: pointer;
+    transition: transform 120ms cubic-bezier(.2,.8,.2,1), background 120ms;
+  }
+  .btn:hover { background: var(--accent-strong); transform: translateY(-1px); }
+  .btn.ghost { background: transparent; color: var(--accent-strong); }
+  .btn.ghost:hover { background: var(--accent-soft); }
+  .small { font-size: 13px; color: var(--muted); }
+  .hero-shot {
+    border-radius: 18px; overflow: hidden; border: 1px solid var(--border);
+    box-shadow: 0 18px 50px rgba(27,24,21,.16), 0 2px 8px rgba(27,24,21,.08);
+    background: var(--surface);
+  }
+  .hero-shot img { width: 100%; }
+
+  .stats { display: flex; gap: 34px; flex-wrap: wrap; padding: 22px 0 0; border-top: 1px solid var(--border); }
+  .stat b { font-family: var(--display); font-size: 26px; font-weight: 600; display: block; line-height: 1.1; }
+  .stat span { font-size: 12.5px; color: var(--muted); }
+
+  section.block { padding: 64px 0; border-top: 1px solid var(--border); }
+  h2 { font-family: var(--display); font-size: clamp(26px, 3.4vw, 38px); font-weight: 600; line-height: 1.12; margin: 8px 0 16px; letter-spacing: -.01em; }
+  h3 { font-size: 16px; font-weight: 650; margin: 0 0 6px; }
+  .cols-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
+  .cols-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 22px; box-shadow: 0 1px 2px rgba(27,24,21,.05);
+  }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+  .step-num {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-strong);
+    display: grid; place-items: center; font-weight: 700; font-size: 13px; margin-bottom: 12px;
+  }
+  .fix {
+    display: grid; grid-template-columns: 40px minmax(0,1fr); gap: 16px;
+    padding: 20px 0; border-bottom: 1px solid var(--border);
+  }
+  .fix:last-child { border-bottom: 0; }
+  .fix-icon {
+    width: 40px; height: 40px; border-radius: 11px; background: var(--accent-soft); color: var(--accent-strong);
+    display: grid; place-items: center;
+  }
+  .fix p { margin: 4px 0 0; color: var(--muted); font-size: 14.5px; }
+  .tag {
+    display: inline-block; font-size: 10.5px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase;
+    background: var(--surface-2); color: var(--muted); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px 9px; margin-left: 8px; vertical-align: 2px;
+  }
+  .tag.new { background: var(--accent-soft); color: var(--accent-strong); border-color: transparent; }
+  .parity { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .parity span {
+    font-size: 12.5px; color: var(--muted); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th, td { text-align: left; padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 650; }
+  td.price { font-family: var(--display); font-size: 20px; font-weight: 600; white-space: nowrap; }
+  tr.free td { background: var(--accent-soft); }
+  .price-note { font-size: 13px; color: var(--muted); margin-top: 14px; max-width: 62ch; }
+
+  details { border-bottom: 1px solid var(--border); padding: 14px 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 15.5px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--muted); font-weight: 400; font-size: 20px; line-height: 1; }
+  details[open] summary::after { content: "\2212"; }
+  details p { margin: 10px 0 2px; color: var(--muted); font-size: 14.5px; max-width: 68ch; }
+
+  .final { text-align: center; padding: 78px 0 86px; border-top: 1px solid var(--border); }
+  .final h2 { max-width: 20ch; margin-left: auto; margin-right: auto; }
+  footer { border-top: 1px solid var(--border); padding: 26px 0 44px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 36px; }
+    .brand-tag { display: none; }
+    header.top .btn { min-height: 42px; padding: 0 16px; font-size: 14px; white-space: nowrap; }
+    .stats { gap: 22px 28px; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { min-width: 0; }
+    th, td { padding: 12px 8px; }
+    td.price { font-size: 18px; }
+    .cols-2, .cols-3 { grid-template-columns: 1fr; gap: 18px; }
+    nav.top-links { display: none; }
+    section.block { padding: 46px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .btn { transition: none; }
+    .btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./launch.html">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+      </span>
+      <span>
+        <span class="brand-name">Chowk</span><br>
+        <span class="brand-tag">Central Bengaluru</span>
+      </span>
+    </a>
+    <nav class="top-links" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#fixes">What is different</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">Questions</a>
+    </nav>
+    <a class="btn" href="./index.html">Open the survey</a>
+  </header>
+
+  <section class="hero">
+    <div>
+      <span class="eyebrow">A survey, not a feed</span>
+      <h1>Route by how a street feels.</h1>
+      <p class="lede">Chowk puts a noise grade on every street in central Bengaluru. Pick a route and you see the average next to the quietest option, before you walk it.</p>
+      <div class="cta-row">
+        <a class="btn" href="./index.html">Open the survey</a>
+        <a class="btn ghost" href="#fixes">See what is different</a>
+      </div>
+      <p class="small" style="margin-top:16px">No account. No advertising. Works offline once loaded.</p>
+      <div class="stats">
+        <div class="stat"><b>566</b><span>places surveyed</span></div>
+        <div class="stat"><b>395</b><span>streets graded</span></div>
+        <div class="stat"><b>2</b><span>metro lines</span></div>
+        <div class="stat"><b>0</b><span>sponsored pins</span></div>
+      </div>
+    </div>
+    <figure class="hero-shot" style="margin:0">
+      <img src="assets/launch/hero.png" width="790" height="1200" alt="Chowk directions panel: a walk of 10 minutes and 750 metres from the map centre to Karnataka Government Museum, with an average street noise of 44 out of 100 and the six step route beside the map.">
+    </figure>
+  </section>
+
+  <section class="block" id="problem">
+    <div class="cols-2">
+      <div>
+        <span class="eyebrow">The problem</span>
+        <h2>A map will happily send you down the loudest road in the city, because it is forty seconds faster.</h2>
+      </div>
+      <div>
+        <p class="lede" style="font-size:16px">It has no way to tell you that the lane behind is calm, that the crossing has no signal, or that the footpath ends. Speed is the only number it shows, so speed becomes the only thing you can choose.</p>
+        <p class="lede" style="font-size:16px; margin-bottom:0">And when you save a place, you are trusting a list you cannot search, cannot export, and cannot take with you when the network drops.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <span class="eyebrow">How it works</span>
+    <h2>Three steps, no surprises.</h2>
+    <div class="cols-3">
+      <div class="card">
+        <div class="step-num">1</div>
+        <h3>Search or tap the map</h3>
+        <p>Twelve categories, streets by name, metro stations by line. Results are ranked from the centre of your map, not from a profile you never agreed to.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">2</div>
+        <h3>Pick a route and read it</h3>
+        <p>Walk, cycle, drive or metro, with time, distance and the noise on the way. Step free routing skips stairs. The metro option shows the fare and the station names.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">3</div>
+        <h3>Keep what you found</h3>
+        <p>Save it to a list, write a note about the entrance or the queue, print a field card, and export the lot as a file whenever you want.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="fixes">
+    <span class="eyebrow">What is different</span>
+    <h2>Seven things this map does that the one you use does not.</h2>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 8c3-2 6 2 9 0s6 2 9 0M3 13c3-2 6 2 9 0s6 2 9 0M3 18c3-2 6 2 9 0s6 2 9 0"/></svg>
+      </span>
+      <div>
+        <h3>Quiet streets <span class="tag new">new</span></h3>
+        <p>Every one of the 395 surveyed streets carries a noise grade. Turn on the quiet layer to paint the map by calmness, or ask for the quietest route and trade a minute for a street you can talk on.</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 3v4M12 17v4M4.9 7.7l3.5 2M15.6 14.3l3.5 2M4.9 16.3l3.5-2M15.6 9.7l3.5-2"/><circle cx="12" cy="12" r="3.2"/></svg>
+      </span>
+      <div>
+        <h3>Noise on every route <span class="tag new">new</span></h3>
+        <p>Each route card shows its average noise and compares it with the quietest option. The number is an estimate from the survey, and the app says so rather than pretending to measure live traffic.</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11z"/><path d="M12 8.4v3.2M12 14.6v.1"/></svg>
+      </span>
+      <div>
+        <h3>Fixes layer <span class="tag new">new</span></h3>
+        <p>Report a broken pavement, a missing step free entrance or an unsafe crossing. It stays on the map until someone marks it fixed, so the survey gets better with use instead of resetting.</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 16V6h16v10H4z"/><path d="M8 20h8"/></svg>
+      </span>
+      <div>
+        <h3>Field card <span class="tag new">new</span></h3>
+        <p>A printable card for any place: a drawn street plan, the calm score, the hours, and your own note. Download it as an image or print it on paper and hand it to someone.</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M12 13l-3 8M12 13l3 8M8 9h8"/></svg>
+      </span>
+      <div>
+        <h3>Step free, properly <span class="tag new">new</span></h3>
+        <p>Step free routing avoids stairs on the walking graph, and a filter shows only places tagged step free. Twelve places in the survey carry the tag, and the rest are honest about not having it.</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 4h9l4 4v12H6z"/><path d="M9 12h7M9 16h5"/></svg>
+      </span>
+      <div>
+        <h3>Yours to keep <span class="tag new">new</span></h3>
+        <p>Saved places and notes live in your browser, searchable, exportable as a JSON file. No account to lose, no list that disappears from the app, no sync that quietly drops the newest places.</p>
+      </div>
+    </div>
+
+    <div class="fix">
+      <span class="fix-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/></svg>
+      </span>
+      <div>
+        <h3>A typical day, in the open <span class="tag new">new</span></h3>
+        <p>Move the departure slider to see how a weekday changes drive times. It is a published curve, not live traffic, and the app prints the reasoning next to the slider rather than hiding it.</p>
+      </div>
+    </div>
+
+    <p class="small" style="margin-top:22px; max-width:70ch">Everything else you expect is here too, because parity is the price of entry rather than a feature:</p>
+    <div class="parity">
+      <span>Search with categories</span><span>Place sheets and hours</span><span>Metro with fares</span>
+      <span>Measure distance</span><span>Command palette</span><span>Keyboard shortcuts</span>
+      <span>List view for screen readers</span><span>Light, dark and high contrast</span><span>Print the map</span>
+      <span>Offline once loaded</span><span>No ads, ever</span>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="cols-2">
+      <figure style="margin:0">
+        <img src="assets/launch/card.png" width="662" height="486" alt="A field card for Hard Rock Cafe: a paper card with a small street plan, a calm score of 81 out of 100, the address, coordinates and a survey note." style="border-radius:14px; border:1px solid var(--border)">
+      </figure>
+      <div>
+        <span class="eyebrow">On paper</span>
+        <h2>Some things belong on a wall.</h2>
+        <p class="lede" style="font-size:16px">A field card fits on one page. The street plan is drawn from the same OpenStreetMap data as the map, the calm score comes from the survey, and your note is yours.</p>
+        <p class="lede" style="font-size:16px">Four inks. Download a PNG, or print it and stick it on the studio wall next to the bus timetable it replaces.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="pricing">
+    <span class="eyebrow">Pricing</span>
+    <h2>The map is free. The printing is not, if you want it to be.</h2>
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Tier</th><th scope="col">Who it is for</th><th scope="col">Price</th><th scope="col">What you get</th></tr>
+      </thead>
+      <tbody>
+        <tr class="free">
+          <td><strong>Survey</strong></td>
+          <td>Anyone</td>
+          <td class="price">Free</td>
+          <td>The whole map loop, all layers, saves, notes, export, one field card at a time.</td>
+        </tr>
+        <tr>
+          <td><strong>Field kit</strong></td>
+          <td>One person who prints and shares</td>
+          <td class="price">₹499 once</td>
+          <td>Unlimited card packs, four inks, an A4 print set, note archive import.</td>
+        </tr>
+        <tr>
+          <td><strong>Neighbourhood</strong></td>
+          <td>A group, school or association</td>
+          <td class="price">₹4,999 a year</td>
+          <td>A shared fixes layer, a custom survey extent, and named attribution on the cards.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="price-note">No subscription for the map itself, no per seat pricing, no card on file for the free tier because there is no account. One email before a yearly renewal, one click to cancel.</p>
+  </section>
+
+  <section class="block" id="faq">
+    <span class="eyebrow">Questions</span>
+    <h2>Asked, and answered plainly.</h2>
+
+    <details open>
+      <summary>Is this the same map as the one I already use?</summary>
+      <p>No. Chowk draws its own map from OpenStreetMap data, covers central Bengaluru only, and is not affiliated with any map provider. There are no map tiles, no satellite imagery and no street photographs. Outside the survey the app says it has nothing rather than guessing.</p>
+    </details>
+    <details>
+      <summary>Where does the noise number come from?</summary>
+      <p>From the road class and the survey notes on each street: a trunk road scores loud, a residential lane scores quiet, and the number is averaged along the route. It is an estimate. The app labels it as one everywhere it appears.</p>
+    </details>
+    <details>
+      <summary>Does it work offline?</summary>
+      <p>Yes, once it has loaded. The map data is local, and your saved places and notes sit in the browser. There is no server to lose.</p>
+    </details>
+    <details>
+      <summary>Can I bring my saved places from another app?</summary>
+      <p>Not yet. You can export from Chowk as JSON today. Import is on the list, and the list is public in the project.</p>
+    </details>
+    <details>
+      <summary>Why are there no star ratings or reviews?</summary>
+      <p>Because the survey does not have them, and inventing them would be exactly the kind of thing this project is against. A calm score, the hours and the note you wrote are the useful part.</p>
+    </details>
+    <details>
+      <summary>What happens to my data?</summary>
+      <p>It stays in your browser. Settings has one button that deletes everything, no email necessary. Nothing is sent anywhere, because there is nowhere to send it.</p>
+    </details>
+  </section>
+
+  <section class="final">
+    <span class="eyebrow">Open now</span>
+    <h2>566 places. One map. No sponsored pin in sight.</h2>
+    <div class="cta-row" style="justify-content:center">
+      <a class="btn" href="./index.html">Open the survey</a>
+    </div>
+    <p class="small" style="margin-top:14px">Central Bengaluru, from the data up.</p>
+  </section>
+
+  <footer>
+    <span>Chowk is a clean room survey of central Bengaluru. Map data by OpenStreetMap contributors, ODbL 1.0.</span>
+    <span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">Map licence</a> · <a href="./index.html">The app</a></span>
+  </footer>
+</div>
+
+</body>
+</html>

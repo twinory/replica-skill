@@ -1,0 +1,9 @@
+https://www.openstreetmap.org/relation/7902476
+
+Bengaluru City
+Its the capital of the Indian state of Karnataka. 
+Population of over ten million. Third most populous city in India. 
+
+Reason for choosing this area:
+I have been working in Bangalore as a data engineer for the last two years, and the exploration
+of the OSM data of my city sounded very interesting and fun. 

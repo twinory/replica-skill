@@ -1,0 +1,189 @@
+{
+ "_source": "OpenStreetMap via deadheaven07/NavIndia osm-bengaluru-snapshot.json (ODbL 1.0). Station order and line assignments kept as published.",
+ "stations": [
+  {
+   "name": "Challaghatta",
+   "line": "PURPLE",
+   "coordinates": [
+    77.476,
+    12.899
+   ]
+  },
+  {
+   "name": "Kengeri Bus Terminal",
+   "line": "PURPLE",
+   "coordinates": [
+    77.483,
+    12.909
+   ]
+  },
+  {
+   "name": "Mysuru Road",
+   "line": "PURPLE",
+   "coordinates": [
+    77.533,
+    12.946
+   ]
+  },
+  {
+   "name": "Vijayanagar",
+   "line": "PURPLE",
+   "coordinates": [
+    77.537,
+    12.969
+   ]
+  },
+  {
+   "name": "Nadaprabhu Kempegowda Station Majestic",
+   "line": "PURPLE",
+   "coordinates": [
+    77.572,
+    12.978
+   ]
+  },
+  {
+   "name": "Vidhana Soudha",
+   "line": "PURPLE",
+   "coordinates": [
+    77.592,
+    12.979
+   ]
+  },
+  {
+   "name": "Mahatma Gandhi Road",
+   "line": "PURPLE",
+   "coordinates": [
+    77.607,
+    12.975
+   ]
+  },
+  {
+   "name": "Indiranagar",
+   "line": "PURPLE",
+   "coordinates": [
+    77.641,
+    12.978
+   ]
+  },
+  {
+   "name": "Baiyappanahalli",
+   "line": "PURPLE",
+   "coordinates": [
+    77.652,
+    12.991
+   ]
+  },
+  {
+   "name": "Krishnarajapura (KR Puram)",
+   "line": "PURPLE",
+   "coordinates": [
+    77.689,
+    12.998
+   ]
+  },
+  {
+   "name": "Garudacharpalya",
+   "line": "PURPLE",
+   "coordinates": [
+    77.712,
+    12.992
+   ]
+  },
+  {
+   "name": "Pattandur Agrahara (ITPL)",
+   "line": "PURPLE",
+   "coordinates": [
+    77.747,
+    12.986
+   ]
+  },
+  {
+   "name": "Whitefield (Kadugodi)",
+   "line": "PURPLE",
+   "coordinates": [
+    77.761,
+    12.996
+   ]
+  },
+  {
+   "name": "Nagasandra",
+   "line": "GREEN",
+   "coordinates": [
+    77.5,
+    13.048
+   ]
+  },
+  {
+   "name": "Yeshwanthpur",
+   "line": "GREEN",
+   "coordinates": [
+    77.55,
+    13.023
+   ]
+  },
+  {
+   "name": "Srirampura / Malleshwaram",
+   "line": "GREEN",
+   "coordinates": [
+    77.564,
+    12.997
+   ]
+  },
+  {
+   "name": "Chickpet",
+   "line": "GREEN",
+   "coordinates": [
+    77.574,
+    12.968
+   ]
+  },
+  {
+   "name": "Krishna Rajendra Market",
+   "line": "GREEN",
+   "coordinates": [
+    77.575,
+    12.96
+   ]
+  },
+  {
+   "name": "National College Basavanagudi",
+   "line": "GREEN",
+   "coordinates": [
+    77.573,
+    12.95
+   ]
+  },
+  {
+   "name": "South End Circle",
+   "line": "GREEN",
+   "coordinates": [
+    77.575,
+    12.937
+   ]
+  },
+  {
+   "name": "Jayanagar",
+   "line": "GREEN",
+   "coordinates": [
+    77.58,
+    12.929
+   ]
+  },
+  {
+   "name": "Banashankari",
+   "line": "GREEN",
+   "coordinates": [
+    77.573,
+    12.915
+   ]
+  },
+  {
+   "name": "Silk Institute",
+   "line": "GREEN",
+   "coordinates": [
+    77.525,
+    12.862
+   ]
+  }
+ ]
+}

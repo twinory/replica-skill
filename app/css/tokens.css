@@ -1,0 +1,193 @@
+/* Chowk design tokens
+   Roles first, values second. Light, dark and high contrast themes.
+   Checked with replica-design/contrast.py (see replica/design/tokens.json). */
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/inter.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Fraunces";
+  src: url("../assets/fonts/fraunces.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  color-scheme: light;
+
+  /* type */
+  --font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, "Iowan Old Style", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-xs: 11px;
+  --text-sm: 12.5px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 26px;
+  --text-3xl: 34px;
+
+  /* space */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+  --s-9: 56px;
+
+  /* radius */
+  --r-xs: 4px;
+  --r-sm: 7px;
+  --r-md: 11px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+
+  /* motion */
+  --mo-fast: 120ms;
+  --mo-base: 200ms;
+  --mo-slow: 320ms;
+  --mo-ease: cubic-bezier(.2, .8, .2, 1);
+
+  /* layout */
+  --panel-w: 396px;
+  --topbar-h: 64px;
+
+  /* light theme */
+  --c-bg: #f3eada;
+  --c-surface: #fffcf4;
+  --c-surface-2: #f8f1e3;
+  --c-surface-3: #efe5d3;
+  --c-border: #e2d5c0;
+  --c-border-strong: #c9b79c;
+  --c-text: #1b1815;
+  --c-text-muted: #6d6152;
+  --c-text-faint: #8a7d6b;
+  --c-accent: #0b6e4f;
+  --c-accent-strong: #08543c;
+  --c-accent-soft: #dcebe0;
+  --c-on-accent: #fffcf4;
+  --c-marigold: #b03a0a;
+  --c-marigold-soft: #f7e3d2;
+  --c-danger: #a62a1e;
+  --c-success: #0b6e4f;
+  --c-focus: #0b6e4f;
+
+  --c-water: #afd3db;
+  --c-water-line: #8fb9c4;
+  --c-park: #cedeBB;
+  --c-park-line: #b4c9a0;
+  --c-green: #b9d3a4;
+  --c-pitch: #dbe6c4;
+  --c-building: #e8dcc8;
+  --c-building-line: #dbccb4;
+  --c-road: #fffdf7;
+  --c-road-casing: #dbcaae;
+  --c-road-label: #5f5345;
+  --c-route: #0b6e4f;
+  --c-route-alt: #7f6e5a;
+  --c-north: #1b1815;
+
+  --shadow-1: 0 1px 2px rgba(27, 24, 21, .07), 0 1px 1px rgba(27, 24, 21, .04);
+  --shadow-2: 0 2px 6px rgba(27, 24, 21, .08), 0 10px 28px rgba(27, 24, 21, .10);
+  --shadow-3: 0 10px 40px rgba(27, 24, 21, .18), 0 2px 8px rgba(27, 24, 21, .10);
+
+  --grain-opacity: .30;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: #131210;
+  --c-surface: #1c1a16;
+  --c-surface-2: #24211c;
+  --c-surface-3: #2c2823;
+  --c-border: #3a342c;
+  --c-border-strong: #5a5145;
+  --c-text: #f4ede0;
+  --c-text-muted: #b5a794;
+  --c-text-faint: #8e8272;
+  --c-accent: #4fc79b;
+  --c-accent-strong: #7fddb8;
+  --c-accent-soft: #1d3229;
+  --c-on-accent: #0d2a20;
+  --c-marigold: #f08a4b;
+  --c-marigold-soft: #382218;
+  --c-danger: #f0857a;
+  --c-success: #4fc79b;
+  --c-focus: #7fddb8;
+
+  --c-water: #23414a;
+  --c-water-line: #2f5662;
+  --c-park: #2c3d2a;
+  --c-park-line: #3b5137;
+  --c-green: #35482f;
+  --c-pitch: #33402c;
+  --c-building: #24211c;
+  --c-building-line: #332e27;
+  --c-road: #38322a;
+  --c-road-casing: #24201b;
+  --c-road-label: #cbbdaa;
+  --c-route: #4fc79b;
+  --c-route-alt: #948876;
+  --c-north: #f4ede0;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, .45), 0 12px 30px rgba(0, 0, 0, .35);
+  --shadow-3: 0 12px 44px rgba(0, 0, 0, .6);
+  --grain-opacity: .22;
+}
+
+[data-theme="contrast"] {
+  color-scheme: light;
+  --c-bg: #ffffff;
+  --c-surface: #ffffff;
+  --c-surface-2: #ffffff;
+  --c-surface-3: #f0f0f0;
+  --c-border: #000000;
+  --c-border-strong: #000000;
+  --c-text: #000000;
+  --c-text-muted: #1a1a1a;
+  --c-text-faint: #333333;
+  --c-accent: #00432f;
+  --c-accent-strong: #002d1f;
+  --c-accent-soft: #e2efe8;
+  --c-on-accent: #ffffff;
+  --c-marigold: #8a2c00;
+  --c-marigold-soft: #ffeadf;
+  --c-danger: #8a0f00;
+  --c-success: #00432f;
+  --c-focus: #000000;
+
+  --c-water: #cfe8ef;
+  --c-water-line: #000000;
+  --c-park: #dfeed3;
+  --c-park-line: #000000;
+  --c-green: #cfe3bd;
+  --c-pitch: #e8f0dc;
+  --c-building: #f2f2f2;
+  --c-building-line: #000000;
+  --c-road: #ffffff;
+  --c-road-casing: #000000;
+  --c-road-label: #000000;
+  --c-route: #00432f;
+  --c-route-alt: #000000;
+  --c-north: #000000;
+  --grain-opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --mo-fast: 0ms;
+    --mo-base: 0ms;
+    --mo-slow: 0ms;
+  }
+}
