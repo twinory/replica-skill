@@ -126,6 +126,18 @@ class AssetsAndDeploy(unittest.TestCase):
         self.assertIn("assets/filters/base.txt", source)
         self.assertIn("assets/patches/sites.json", source)
 
+    def test_missing_builds_explain_themselves(self):
+        # A download button with nothing behind it used to return a line of
+        # plain text, which reads like a crash rather than a missing build.
+        with open(os.path.join(ROOT, "deploy", "src", "index.js"), encoding="utf-8") as handle:
+            worker = handle.read()
+        self.assertIn("function notBuilt(", worker)
+        self.assertEqual(worker.count("withSecurity(notBuilt("), 2)
+        self.assertIn("'content-type': 'text/html; charset=utf-8'", worker)
+        self.assertIn("status: 503", worker)
+        self.assertIn("ANDROID_BUILD_URL", worker)
+        self.assertIn("IOS_BUILD_URL", worker)
+
     def test_no_em_dash_in_anything_shipped(self):
         report = check_assets.Report()
         check_assets.check_no_em_dash(report)

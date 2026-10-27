@@ -99,6 +99,49 @@ async function withSecurity(response, { html = false } = {}) {
   });
 }
 
+/**
+ * A download link with no build behind it. Plain text here read like a crash,
+ * when it is really a deliberate state: there is nothing to install yet. The
+ * status stays 503 so a script can tell the difference, but a person gets a
+ * page that says what is missing and how to fix it.
+ */
+function notBuilt({ heading, why, fix }) {
+  const body = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${heading}</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: Canvas; color: CanvasText; padding: 24px; }
+  main { max-width: 34rem; }
+  h1 { font-size: 1.5rem; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  code { font-size: 0.9em; word-break: break-all; }
+  a { color: inherit; }
+  .back { display: inline-block; margin-top: 16px; padding: 10px 18px;
+    border: 1px solid currentColor; border-radius: 999px; text-decoration: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>${heading}</h1>
+  <p>${why}</p>
+  <p>${fix}</p>
+  <a class="back" href="/">Back to the site</a>
+</main>
+</body>
+</html>
+`;
+  return new Response(body, {
+    status: 503,
+    headers: { 'content-type': 'text/html; charset=utf-8' },
+  });
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -152,7 +195,11 @@ export default {
     if (path === '/download/android') {
       const target = env.ANDROID_BUILD_URL;
       if (!target) {
-        return new Response('No Android build configured yet.', { status: 503 });
+        return withSecurity(notBuilt({
+          heading: 'No Android build yet',
+          why: 'The Worker is ready to hand out an APK, but none has been uploaded, so there is nothing to download right now.',
+          fix: 'Set ANDROID_BUILD_URL in wrangler.toml to the hosted APK, then deploy again.',
+        }), { html: true });
       }
       return Response.redirect(target, 302);
     }
@@ -160,10 +207,11 @@ export default {
     if (path === '/download/ios') {
       const target = env.IOS_BUILD_URL;
       if (!target) {
-        return new Response(
-          'No iOS build configured. Apple installs only signed builds: set IOS_BUILD_URL to a TestFlight or App Store link.',
-          { status: 503 },
-        );
+        return withSecurity(notBuilt({
+          heading: 'No iPhone build yet',
+          why: 'Apple installs only builds that Apple signed. A Worker can host a file, but it cannot sign an app, so this link has nothing to point at until a TestFlight or App Store build exists.',
+          fix: 'Set IOS_BUILD_URL in wrangler.toml to the TestFlight or App Store link, then deploy again.',
+        }), { html: true });
       }
       return Response.redirect(target, 302);
     }

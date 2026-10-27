@@ -47,8 +47,8 @@ npx wrangler secret put ANDROID_BUILD_URL   # or set it in [vars]
 ```
 
 iOS cannot be hosted here. Set `IOS_BUILD_URL` to a TestFlight link. If you leave
-the variable empty, the route returns a 503 that says exactly why, instead of a
-dead button.
+the variable empty, the route returns a 503 page that says exactly why and how
+to fix it, instead of a dead button.
 
 ## Updating filters without a release
 
