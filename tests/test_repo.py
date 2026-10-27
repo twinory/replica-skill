@@ -62,10 +62,24 @@ class Repo(unittest.TestCase):
         for s in SKILLS:
             self.assertIn("`/%s`" % s, readme)
 
+    # Vendored and generated trees. The sweep is about text this repo writes,
+    # and npm ships files with em dashes in them that are not ours to edit.
+    SKIP_DIRS = {
+        ".git",
+        "__pycache__",
+        "node_modules",
+        ".dart_tool",
+        ".wrangler",
+        "build",
+        "dist",
+        ".venv",
+        ".pytest_cache",
+    }
+
     def test_no_em_dashes_anywhere(self):
         bad = []
         for dirpath, dirnames, filenames in os.walk(ROOT):
-            dirnames[:] = [d for d in dirnames if d not in (".git", "__pycache__")]
+            dirnames[:] = [d for d in dirnames if d not in self.SKIP_DIRS]
             for fn in filenames:
                 if fn.endswith((".md", ".py", ".json", ".ts", ".csv")):
                     path = os.path.join(dirpath, fn)

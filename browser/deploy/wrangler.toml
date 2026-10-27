@@ -10,6 +10,9 @@ directory = "./public"
 binding = "ASSETS"
 run_worker_first = true
 not_found_handling = "none"
+# Serve .html files at their real path instead of redirecting /demo.html to
+# /demo. The landing page links use the .html form.
+html_handling = "none"
 
 [vars]
 MIN_APP_VERSION = "0.1.0"

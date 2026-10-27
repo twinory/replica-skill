@@ -144,6 +144,46 @@ class AssetsAndDeploy(unittest.TestCase):
         self.assertEqual(report.errors, [])
 
 
+class DeployConfig(unittest.TestCase):
+    """Everything here was found by deploying to the local workerd runtime.
+    Wrangler 3 accepted this config and then ignored the assets block, which
+    would have shipped a Worker whose every request threw."""
+
+    def setUp(self):
+        self.toml = open(os.path.join(ROOT, "deploy", "wrangler.toml"), encoding="utf-8").read()
+        self.pkg = json.load(open(os.path.join(ROOT, "deploy", "package.json"), encoding="utf-8"))
+        self.worker = open(os.path.join(ROOT, "deploy", "src", "index.js"), encoding="utf-8").read()
+
+    def test_assets_block_is_complete(self):
+        self.assertIn("[assets]", self.toml)
+        self.assertIn('directory = "./public"', self.toml)
+        self.assertIn('binding = "ASSETS"', self.toml)
+        self.assertIn("run_worker_first = true", self.toml)
+        self.assertIn('html_handling = "none"', self.toml)
+
+    def test_wrangler_major_is_four(self):
+        # Version 3 parses this file and silently drops [assets]. The dry run
+        # shows no ASSETS binding, and only then does the deployed Worker fail.
+        version = self.pkg["devDependencies"]["wrangler"]
+        self.assertTrue(version.startswith("^4"), "wrangler must stay on 4.x, found %s" % version)
+        self.assertTrue(os.path.exists(os.path.join(ROOT, "deploy", "package-lock.json")))
+
+    def test_root_and_extensionless_paths_are_aliased(self):
+        # html_handling none stops the assets layer mapping / to index.html,
+        # and the old redirects pointed at the extensionless forms.
+        for line in ("'/': '/index.html'", "'/demo': '/demo.html'", "'/limits': '/limits.html'"):
+            self.assertIn(line, self.worker)
+
+    def test_unknown_paths_are_a_real_404(self):
+        self.assertIn("status: 404", self.worker)
+        self.assertNotIn("return withSecurity(fallback, { html: true })", self.worker)
+
+    def test_deploy_script_syncs_first(self):
+        self.assertIn("sync", self.pkg["scripts"]["deploy"])
+        self.assertIn("wrangler deploy", self.pkg["scripts"]["deploy"])
+        self.assertIn("wrangler deploy --dry-run", self.pkg["scripts"]["check"])
+
+
 class MediaSites(unittest.TestCase):
     """App view earns its keep on the four apps this person opens daily."""
 

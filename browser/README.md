@@ -91,10 +91,17 @@ The Worker is the whole backend.
 
 ```bash
 cd browser/deploy
-npm install
-npm run dev      # local: landing page, demo, /v1 endpoints
-npm run deploy   # syncs assets, then publishes to your Cloudflare account
+npm ci                 # wrangler 4, pinned by package-lock.json
+npx wrangler login
+npm run check          # dry run: proves the ASSETS binding is wired
+npm run deploy         # syncs assets, then publishes to your account
 ```
+
+`npm ci` matters more than it looks. Wrangler 3 parses `wrangler.toml` without
+complaint and silently drops the `[assets]` block, so the Worker deploys and
+then throws on every request. `npm run check` is the tell: it must list
+`env.ASSETS` as an Assets binding. `deploy/README.md` has the full walkthrough
+and a verification checklist to run against the live URL.
 
 Then point the app at your Worker:
 

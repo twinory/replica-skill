@@ -142,6 +142,17 @@ function notBuilt({ heading, why, fix }) {
   });
 }
 
+// Extensionless paths, kept working because the assets layer used to redirect
+// /demo.html to /demo before html_handling was pinned to none.
+const PATH_ALIASES = {
+  // With html_handling none the assets layer stops mapping the root to
+  // index.html, so the root is an alias like any other.
+  '/': '/index.html',
+  '/demo': '/demo.html',
+  '/limits': '/limits.html',
+  '/index': '/index.html',
+};
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -216,10 +227,28 @@ export default {
       return Response.redirect(target, 302);
     }
 
+    // The assets layer serves .html at its real path, so these two forms both
+    // have to work: one is what the landing page links to, the other is what
+    // the old extension-drop redirect used.
+    const canonical = PATH_ALIASES[path];
+    if (canonical) {
+      const aliased = await env.ASSETS.fetch(new Request(new URL(canonical, url.origin).toString()));
+      return withSecurity(aliased, { html: true });
+    }
+
     const asset = await env.ASSETS.fetch(request);
     if (asset.status === 404) {
-      const fallback = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin)));
-      return withSecurity(fallback, { html: true });
+      // Show the landing page to a person, but keep the 404 so a crawler or a
+      // monitor is not told that a typo is a real address.
+      const fallback = await env.ASSETS.fetch(new Request(new URL('/index.html', url.origin).toString()));
+      const body = await fallback.text();
+      return withSecurity(
+        new Response(body, {
+          status: 404,
+          headers: { 'content-type': 'text/html; charset=utf-8' },
+        }),
+        { html: true },
+      );
     }
     const type = asset.headers.get('content-type') || '';
     return withSecurity(asset, { html: type.includes('text/html') });
