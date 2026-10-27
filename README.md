@@ -153,6 +153,32 @@ your listing.
 python3 -m unittest discover -s tests -v
 ```
 
+## The app this pack built
+
+The `browser/` folder is **Husk**, a working build of the case the pack is for: a
+mobile browser that blocks ads before a page paints, then turns the page into a
+full screen app with one tap.
+
+One Flutter codebase around each phone's own engine. WKWebView on iPhone,
+Android WebView on Android. Same shell, same filter lists, same App view rules,
+and no browser engine to rebuild, which is the only way two people ship this on
+both platforms at once.
+
+```bash
+cd browser
+bash tools/scaffold.sh     # adds android/ and ios/, patches the two manifest files
+flutter pub get
+flutter run
+```
+
+Filter lists and App view patches come from the Cloudflare Worker in
+`browser/deploy`, so a selector that a site broke is a deploy, not a store
+review. Start at `browser/README.md`. For the reasoning behind the choices, read
+`browser/docs/feasibility.md`: it explains which ads no browser can remove, why
+Spotify cannot play in an iPhone web view, and why Google sign-in leaves the app.
+The name and the checks behind it are in `browser/docs/naming.md`, including the
+two tools that make a rename repeatable.
+
 ## Fine print
 
 **It rebuilds functionality and UX patterns, clean-room style.** It studies

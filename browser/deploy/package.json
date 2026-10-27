@@ -1,0 +1,17 @@
+{
+  "name": "husk-updates",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "sync": "python3 ../tools/sync-assets.py",
+    "dev": "npm run sync && wrangler dev",
+    "preview": "node tools/preview.mjs",
+    "deploy": "npm run sync && wrangler deploy",
+    "check": "npm run sync && wrangler deploy --dry-run",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4.153.0"
+  }
+}

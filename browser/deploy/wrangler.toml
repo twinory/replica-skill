@@ -1,0 +1,28 @@
+name = "husk"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# Static files (the landing page, the demo, the synced filter and patch files)
+# live in ./public. The worker runs first so it can answer /v1/* itself and add
+# security headers to everything else.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true
+not_found_handling = "none"
+# Serve .html files at their real path instead of redirecting /demo.html to
+# /demo. The landing page links use the .html form.
+html_handling = "none"
+
+[vars]
+MIN_APP_VERSION = "0.1.0"
+# Set this to the URL of the signed Android build. A Worker can host an APK
+# directly; it cannot host an iOS build, because Apple only installs apps that
+# Apple signed.
+ANDROID_BUILD_URL = ""
+IOS_BUILD_URL = ""
+
+# Optional: point a custom domain at this worker.
+# [[routes]]
+# pattern = "husk.app"
+# custom_domain = true

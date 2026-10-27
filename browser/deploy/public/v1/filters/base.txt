@@ -1,0 +1,542 @@
+! Husk filter list. Adblock Plus syntax subset.
+! Parsed by lib/core/blocklist.dart. Keep it to what that parser understands:
+!   ||domain^            block any URL on that domain
+!   ||domain/path^       block that path
+!   |https://exact|      block one exact URL
+!   /regex/              block by regular expression
+!   @@...                exception, wins over every block above
+!   ##selector           hide an element on every site
+!   site.com##selector   hide an element on that site
+!   site.com#@#selector  do not hide that element on that site
+!
+! Rules go to WKContentRuleList on iOS and to the WebView content blocker on
+! Android. Anything blocked here never reaches the page, so it cannot be
+! counted pixel by pixel. There are no counters faked in the UI.
+
+!# category: ads
+! ---------------------------------------------------------------------------
+!# category: ads
+! Google advertising and measurement
+! ---------------------------------------------------------------------------
+||doubleclick.net^
+||googleads.g.doubleclick.net^
+||static.doubleclick.net^
+||ad.doubleclick.net^
+||pagead2.googlesyndication.com^
+||tpc.googlesyndication.com^
+||googleadservices.com^
+||googlesyndication.com^
+||adservice.google.com^
+||adservice.google.co.uk^
+||adservice.google.co.in^
+||adservice.google.de^
+||adservice.google.ca^
+||adservice.google.com.au^
+||adsense.com^
+||adsensecustomsearchads.com^
+||google-analytics.com^
+||analytics.google.com^
+||region1.google-analytics.com^
+||googletagmanager.com^
+||googletagservices.com^
+||ssl.google-analytics.com^
+||imgsmailru.com^
+||2mdn.net^
+||googlesyndications.com^
+||adwords.google.com^
+||partner.googleadservices.com^
+||afs.googleusercontent.com^
+||fundingchoicesmessages.google.com^
+||survey.g.doubleclick.net^
+||app-measurement.com^
+||firebaseinstallations.googleapis.com^
+||crashlytics.com^
+||googleoptimize.com^
+||google-analytics.l.google.com^
+
+! ---------------------------------------------------------------------------
+! YouTube advertising. Playback endpoints are never touched.
+! ---------------------------------------------------------------------------
+||youtube.com/pagead/^
+||youtube.com/api/stats/ads^
+||youtube.com/get_midroll_info^
+||youtube.com/ptracking^
+||youtube.com/youtubei/v1/log_event^
+||youtube.com/api/stats/qoe^
+||youtube.com/api/stats/playback^
+||youtube.com/api/stats/delayplay^
+||m.youtube.com/pagead/^
+||m.youtube.com/api/stats/ads^
+||m.youtube.com/get_midroll_info^
+||m.youtube.com/ptracking^
+||music.youtube.com/pagead/^
+||music.youtube.com/api/stats/ads^
+||youtube-nocookie.com/pagead/^
+||youtubeembeddedplayer.googleapis.com^
+||youtube.googleapis.com/youtube/v3/ads^
+||yt3.ggpht.com/ytc/ads^
+||s0.2mdn.net^
+
+! ---------------------------------------------------------------------------
+! Spotify advertising. Audio CDNs and playback endpoints are never touched.
+! ---------------------------------------------------------------------------
+||spclient.wg.spotify.com/ads/^
+||spclient.wg.spotify.com/ad-logic/^
+||adeventtracker.spotify.com^
+||ads-fa.spotify.com^
+||analytics.spotify.com^
+||sp-bootstrap.spotifycdn.com/ads^
+||audio-sp-ads.spotifycdn.com^
+||pubads.g.doubleclick.net^
+
+! ---------------------------------------------------------------------------
+! Amazon, Microsoft, Apple ad networks
+! ---------------------------------------------------------------------------
+||amazon-adsystem.com^
+||aax.amazon-adsystem.com^
+||assoc-amazon.com^
+||adsystem.amazon.com^
+||mads.amazon.com^
+||device-metrics-us.amazon.com^
+||bat.bing.com^
+||c.bing.com^
+||clarity.ms^
+||ads.linkedin.com^
+||ads.pinterest.com^
+||ads.reddit.com^
+||ads-api.twitter.com^
+||ads.youtube.com^
+||ads.yahoo.com^
+||adserver.yahoo.com^
+||gemini.yahoo.com^
+||ads.tiktok.com^
+||analytics.tiktok.com^
+||ads.spotify.com^
+||ads.instagram.com^
+||ads.facebook.com^
+||an.facebook.com^
+||connect.facebook.net^
+||graph.facebook.com/tr^
+||pixel.facebook.com^
+
+! ---------------------------------------------------------------------------
+! Ad exchanges, SSPs, DSPs
+! ---------------------------------------------------------------------------
+||adnxs.com^
+||ib.adnxs.com^
+||secure.adnxs.com^
+||adnxs-simple.com^
+||appnexus.com^
+||rubiconproject.com^
+||fastlane.rubiconproject.com^
+||pubmatic.com^
+||ads.pubmatic.com^
+||image8.pubmatic.com^
+||openx.net^
+||us-u.openx.net^
+||casalemedia.com^
+||contextweb.com^
+||criteo.com^
+||criteo.net^
+||static.criteo.net^
+||dis.criteo.com^
+||smartadserver.com^
+||adform.net^
+||adform.com^
+||taboola.com^
+||cdn.taboola.com^
+||trc.taboola.com^
+||outbrain.com^
+||widgets.outbrain.com^
+||log.outbrainimg.com^
+||teads.tv^
+||cdn.teads.tv^
+||moatads.com^
+||js.moatads.com^
+||advertising.com^
+||adsrvr.org^
+||match.adsrvr.org^
+||bidswitch.net^
+||x.bidswitch.net^
+||1rx.io^
+||agkn.com^
+||ib.adnxs.net^
+||indexww.com^
+||indexexchange.com^
+||sharethrough.com^
+||spotxchange.com^
+||spotx.tv^
+||smaato.net^
+||mopub.com^
+||inmobi.com^
+||adcolony.com^
+||applovin.com^
+||unityads.unity3d.com^
+||vungle.com^
+||chartboost.com^
+||ironsrc.com^
+||supersonicads.com^
+||pubnative.net^
+||startappservice.com^
+||tapjoy.com^
+||adsafeprotected.com^
+||adroll.com^
+||srv.stackadapt.com^
+||stackadapt.com^
+||tremorhub.com^
+||3lift.com^
+||districtm.io^
+||yieldmo.com^
+||gumgum.com^
+||adcolony.net^
+||zedo.com^
+||exponential.com^
+||adbrite.com^
+||buysellads.com^
+||carbonads.net^
+||servedbyadbutler.com^
+||adbutler.com^
+||media.net^
+||contextual.media.net^
+||lijit.com^
+||reklamstore.com^
+||adglare.net^
+||adition.com^
+||adocean.pl^
+||adtrue.com^
+||adspyglass.com^
+||exoclick.com^
+||juicyads.com^
+||trafficjunky.net^
+||propellerads.com^
+||popads.net^
+||popcash.net^
+||onclickads.net^
+||revcontent.com^
+||mgid.com^
+||adskeeper.com^
+||adcash.com^
+||clickadu.com^
+||hilltopads.net^
+||adsterra.com^
+||zonatags.com^
+||tsyndicate.com^
+||exdynsrv.com^
+||realsrv.com^
+||nativo.com^
+||plista.com^
+||ligatus.com^
+||sulvo.com^
+||seedtag.com^
+||tradelab.fr^
+||ferank.fr^
+||adoteq.com^
+||adnium.com^
+||aniview.com^
+||stickyadstv.com^
+||springserve.com^
+||vi.ai^
+||video.unrulymedia.com^
+||rumble.com/ads^
+||imasdk.googleapis.com^
+||securepubads.g.doubleclick.net^
+
+! ---------------------------------------------------------------------------
+!# category: trackers
+! Trackers, session recorders, heatmaps, A/B tools
+! ---------------------------------------------------------------------------
+||scorecardresearch.com^
+||quantserve.com^
+||quantcount.com^
+||hotjar.com^
+||static.hotjar.com^
+||script.hotjar.com^
+||fullstory.com^
+||mouseflow.com^
+||smartlook.com^
+||logrocket.com^
+||luckyorange.com^
+||inspectlet.com^
+||survicate.com^
+||userzoom.com^
+||heap.io^
+||heapanalytics.com^
+||mixpanel.com^
+||api.mixpanel.com^
+||amplitude.com^
+||api.amplitude.com^
+||segment.io^
+||api.segment.io^
+||cdn.segment.com^
+||kissmetrics.com^
+||matomo.cloud^
+||statcounter.com^
+||clicky.com^
+||plausible.io^
+||bugsnag.com^
+||sentry.io^
+||newrelic.com^
+||nr-data.net^
+||optimizely.com^
+||cdn.optimizely.com^
+||vwo.com^
+||visualwebsiteoptimizer.com^
+||abtasty.com^
+||crazyegg.com^
+||branch.io^
+||appsflyer.com^
+||adjust.com^
+||kochava.com^
+||singular.net^
+||tenjin.io^
+||mparticle.com^
+||demdex.net^
+||dpm.demdex.net^
+||omtrdc.net^
+||everesttech.net^
+||bluekai.com^
+||krxd.net^
+||ml314.com^
+||rlcdn.com^
+||tapad.com^
+||crwdcntrl.net^
+||exelator.com^
+||turn.com^
+||adsymptotic.com^
+||agkn.com/rub^
+||zeotap.com^
+||liveramp.com^
+||id5-sync.com^
+||sincera.io^
+||confiant.com^
+||doubleverify.com^
+||iasds01.com^
+||adsafeprotected.com/vans^
+||narrative.io^
+||snowplowanalytics.com^
+||trackjs.com^
+||raygun.io^
+||datadoghq-browser-agent.com^
+||cloudflareinsights.com^
+||static.cloudflareinsights.com^
+
+! ---------------------------------------------------------------------------
+!# category: ads
+! Consent walls and app-nagging overlays that behave like ads
+! ---------------------------------------------------------------------------
+||cdn.cookielaw.org^
+||geolocation.onetrust.com^
+||consent.trustarc.com^
+||consensu.org^
+||sp-prod.net^
+||qualtrics.com^
+||siteintercept.qualtrics.com^
+||crazyegg.com/track^
+||usercentrics.eu^
+||privacy-mgmt.com^
+||cmp.inmobi.com^
+
+! ---------------------------------------------------------------------------
+!# category: ads
+! Popunders and redirect farms
+! ---------------------------------------------------------------------------
+||adf.ly^
+||shorte.st^
+||ouo.io^
+||linkvertise.com^
+||adfoc.us^
+||bc.vc^
+||clk.sh^
+||exe.io^
+||gplinks.co^
+||shrinkme.io^
+||shrinke.me^
+||adshnk.com^
+||linkpoi.me^
+||mdisk.me^
+||za.gl^
+||tmearn.com^
+||upfiles.com^
+||sub2unlock.com^
+||boost.ink^
+||social-unlock.com^
+
+! ---------------------------------------------------------------------------
+!# category: allow
+! Exceptions. These must load even when a broad rule above would match.
+! ---------------------------------------------------------------------------
+@@||googlevideo.com^
+@@||ytimg.com^
+@@||ggpht.com^
+@@||youtubei.googleapis.com^
+@@||youtube.com/youtubei/v1/player^
+@@||youtube.com/youtubei/v1/next^
+@@||youtube.com/youtubei/v1/browse^
+@@||youtube.com/youtubei/v1/search^
+@@||youtube.com/youtubei/v1/guide^
+@@||youtube.com/s/player/^
+@@||youtube.com/player_api^
+@@||youtube.com/iframe_api^
+@@||youtube.com/api/stats/watchtime^
+@@||music.youtube.com/youtubei/^
+@@||spotifycdn.com^
+@@||audio-ak.spotify.com^
+@@||spclient.wg.spotify.com/playback^
+@@||spclient.wg.spotify.com/connect-state^
+@@||accounts.google.com^
+@@||accounts.youtube.com^
+@@||apis.google.com^
+@@||ssl.gstatic.com^
+@@||www.gstatic.com/recaptcha/^
+@@||google.com/recaptcha/^
+@@||recaptcha.net^
+@@||challenges.cloudflare.com^
+@@||js.stripe.com^
+@@||api.stripe.com^
+@@||paypal.com^
+@@||paypalobjects.com^
+@@||cdn.jsdelivr.net^
+@@||unpkg.com^
+@@||cdnjs.cloudflare.com^
+
+! ---------------------------------------------------------------------------
+! Cosmetic rules, every site
+! ---------------------------------------------------------------------------
+##ins.adsbygoogle
+##.adsbygoogle
+##[id^="google_ads_"]
+##[id^="div-gpt-ad"]
+##[id^="ad-slot"]
+##[data-ad-slot]
+##[data-ad-client]
+##iframe[src*="doubleclick.net"]
+##iframe[src*="googlesyndication.com"]
+##iframe[src*="adservice.google"]
+##iframe[src*="amazon-adsystem.com"]
+##iframe[src*="taboola.com"]
+##iframe[src*="outbrain.com"]
+##.ad-banner
+##.ad-container
+##.ad-wrapper
+##.advertisement
+##.advertorial
+##.sponsored-post
+##.sponsored-content
+##.promoted-post
+##[aria-label="Advertisement"]
+##[aria-label="advertisement"]
+##[class^="ad-slot-"]
+##[class*="-ad-slot"]
+##[class^="advert-"]
+##[id^="taboola-"]
+##[id^="outbrain_widget"]
+##.outbrain-widget
+##.taboola-block
+##[data-testid="ad-slot"]
+##[data-testid="ad-banner"]
+##[data-testid="ad-unit"]
+##[data-testid="promoted-post"]
+##[data-testid="sponsored-post"]
+##.sticky-ad
+##.ad-sticky-bottom
+##.ad-sticky-top
+##.interstitial-ad
+##.popup-ad
+##.ad-overlay
+##.adsense-container
+##.gpt-ad
+##.dfp-ad
+##[data-google-query-id]
+##.primis-player
+##.mgid-widget
+##.revcontent-widget
+##.zergnet-widget
+##[id^="adngin-"]
+##[class^="adngin-"]
+##amp-ad
+##amp-embed[type="taboola"]
+##amp-embed[type="outbrain"]
+##amp-sticky-ad
+##div[class*="AdSlot"]
+##div[class*="AdUnit"]
+##div[class*="adPlacement"]
+
+! ---------------------------------------------------------------------------
+! Cosmetic rules, per site. Safe selectors only: never a container that also
+! holds real content.
+! ---------------------------------------------------------------------------
+youtube.com##ytd-display-ad-renderer
+youtube.com##ytd-promoted-sparkles-web-renderer
+youtube.com##ytd-promoted-video-renderer
+youtube.com##ytd-ad-slot-renderer
+youtube.com##ytd-in-feed-ad-layout-renderer
+youtube.com##ytd-banner-promo-renderer
+youtube.com##ytd-statement-banner-renderer
+youtube.com##ytd-companion-slot-renderer
+youtube.com###masthead-ad
+youtube.com###player-ads
+youtube.com###panels-full-bleed-container ytd-companion-slot-renderer
+youtube.com##ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]
+youtube.com##.ytp-ad-overlay-container
+youtube.com##.ytp-ad-overlay-slot
+youtube.com##.ytp-ad-text-overlay
+youtube.com##.ytp-ad-image-overlay
+youtube.com##.ytp-ad-progress-list
+youtube.com##ytd-action-companion-ad-renderer
+youtube.com##ytd-ads-engagement-panel-content-renderer
+youtube.com##ytm-companion-slot
+youtube.com##ytm-promoted-sparkles-web-renderer
+youtube.com##ytm-companion-ad-renderer
+youtube.com##ytm-app-promo
+youtube.com##ytm-mealbar-promo-renderer
+youtube.com##ytm-statement-banner-renderer
+youtube.com##ytm-upsell-dialog-renderer
+youtube.com##.mobile-promo
+youtube.com##ytm-item-section-renderer[section-identifier="ads"]
+music.youtube.com##ytmusic-mealbar-promo-renderer
+music.youtube.com##ytmusic-statement-banner-renderer
+music.youtube.com##ytmusic-popup-container
+music.youtube.com##ytmusic-carousel-shelf-renderer[aria-label*="Premium"]
+music.youtube.com##ytmusic-navigation-button-renderer[aria-label*="Premium"]
+instagram.com##article div[role="button"][aria-label="Sponsored"]
+open.spotify.com##[data-testid="ad-slot"]
+open.spotify.com##[data-testid="leaderboard-ad"]
+open.spotify.com##[data-testid="in-feed-ad"]
+open.spotify.com##[aria-label="Advertisement"]
+open.spotify.com##.marketplace-ad
+open.spotify.com##[data-testid="upgrade-banner"]
+open.spotify.com##[data-testid="download-app-banner"]
+open.spotify.com##.download-app-cta
+reddit.com##shreddit-ad-post
+reddit.com##[data-testid="promoted-post"]
+reddit.com##shreddit-comments-page-ad
+reddit.com##[data-ad-block="true"]
+reddit.com##.promoted-link
+x.com##[data-testid="placementTracking"]
+x.com##[data-testid="promotedIndicator"]
+twitter.com##[data-testid="placementTracking"]
+facebook.com##div[data-pagelet="RightRail"] div[role="complementary"]
+linkedin.com##.feed-shared-update-v2[data-ad-id]
+linkedin.com##[data-testid="ad-banner"]
+twitch.tv##.stream-display-ad__container
+twitch.tv##[data-a-target="video-ad-countdown"]
+dailymotion.com##.AdBanner
+vimeo.com##.player_ad_wrapper
+imdb.com##.ad-slot
+imdb.com##.top-rhs-ad
+ebay.com##.ad-banner
+ebay.com##[data-testid="ad-slot"]
+cnn.com##.ad-slot
+cnn.com##.zn-body__paragraph--ad
+washingtonpost.com##.ad-slot
+medium.com##[data-testid="ad-slot"]
+quora.com##.q-ad
+accuweather.com##.ad-slot
+weather.com##[data-testid="ad-slot"]
+espn.com##.ad-slot
+booking.com##[data-testid="ad-banner"]
+tripadvisor.com##[data-testid="ad-slot"]
+
+! ---------------------------------------------------------------------------
+! Cosmetic exceptions
+! ---------------------------------------------------------------------------
