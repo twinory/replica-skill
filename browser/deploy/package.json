@@ -6,6 +6,7 @@
   "scripts": {
     "sync": "python3 ../tools/sync-assets.py",
     "dev": "npm run sync && wrangler dev",
+    "preview": "node tools/preview.mjs",
     "deploy": "npm run sync && wrangler deploy",
     "tail": "wrangler tail"
   },
