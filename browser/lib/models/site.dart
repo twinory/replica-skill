@@ -15,6 +15,7 @@ class SitePatch {
     this.icon = 'globe',
     this.color = '#6C7A89',
     this.media = false,
+    this.desktopMode = false,
     this.cosmetic = const <String>[],
     this.appHide = const <String>[],
     this.appCss = '',
@@ -32,6 +33,10 @@ class SitePatch {
   final String icon;
   final String color;
   final bool media;
+
+  /// Some services only serve a player to a desktop browser. The app opens
+  /// these with a desktop user agent by default; the person can turn it off.
+  final bool desktopMode;
   final List<String> cosmetic;
   final List<String> appHide;
   final String appCss;
@@ -64,6 +69,7 @@ class SitePatch {
       icon: json['icon'] as String? ?? 'globe',
       color: json['color'] as String? ?? '#6C7A89',
       media: json['media'] as bool? ?? false,
+      desktopMode: json['desktopMode'] as bool? ?? false,
       cosmetic: (json['cosmetic'] as List<dynamic>? ?? const [])
           .map((e) => e as String)
           .toList(),
@@ -87,6 +93,7 @@ class SitePatch {
         'icon': icon,
         'color': color,
         'media': media,
+        'desktopMode': desktopMode,
         'cosmetic': cosmetic,
         'appMode': <String, dynamic>{'hide': appHide, 'css': appCss, 'js': appJs},
         'player': <String, dynamic>{'js': playerJs},

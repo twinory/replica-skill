@@ -6,7 +6,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../core/picker.dart';
+import '../core/playback_probe.dart';
 import '../core/url_rules.dart';
+import '../core/user_agents.dart';
 import '../models/tab.dart';
 import '../state/browser_controller.dart';
 
@@ -70,7 +72,14 @@ class _SiteViewState extends State<SiteView> {
         databaseEnabled: true,
         cacheEnabled: true,
         useHybridComposition: true,
-        applicationNameForUserAgent: 'Husk/0.1',
+        // The default WKWebView and Android WebView strings both announce
+        // themselves as embedded browsers, which is enough for some players to
+        // refuse. These are the same engines wearing the same badge the system
+        // browser wears. See lib/core/user_agents.dart.
+        userAgent: UserAgents.forTab(
+          isIOS: Platform.isIOS,
+          desktop: tab.desktopMode,
+        ),
         contentBlockers: controller.blockersFor(tab),
       ),
       initialUserScripts: UnmodifiableListView<UserScript>(controller.scriptsFor(tab)),
@@ -78,6 +87,23 @@ class _SiteViewState extends State<SiteView> {
         controller.attach(tab.id, web);
         // The picker reports one selector. Everything else it does stays in the
         // page, and it cleans up whether or not a selector arrives.
+        web.addJavaScriptHandler(
+          handlerName: PlaybackProbe.handlerName,
+          callback: (List<dynamic> args) {
+            if (args.isEmpty) {
+              return null;
+            }
+            final payload = args.first;
+            if (payload is Map) {
+              controller.markPlayback(
+                tab.id,
+                (payload['status'] ?? '').toString(),
+                (payload['detail'] ?? '').toString(),
+              );
+            }
+            return null;
+          },
+        );
         web.addJavaScriptHandler(
           handlerName: Picker.handlerName,
           callback: (List<dynamic> args) {

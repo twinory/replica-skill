@@ -21,6 +21,7 @@ class Store {
   static const String _kPatches = 'husk.patches';
   static const String _kFilters = 'husk.filters';
   static const String _kHides = 'husk.hides';
+  static const String _kDesktop = 'husk.desktop';
 
   static Future<Store> open() async => Store(await SharedPreferences.getInstance());
 
@@ -91,6 +92,9 @@ class Store {
 
   Set<String> readShieldsOff() => readStringSet(_kShieldsOff);
   Future<void> writeShieldsOff(Set<String> hosts) => writeStringSet(_kShieldsOff, hosts);
+
+  Set<String> readDesktopHosts() => readStringSet(_kDesktop);
+  Future<void> writeDesktopHosts(Set<String> hosts) => writeStringSet(_kDesktop, hosts);
 
   Set<String> readAppHosts() => readStringSet(_kAppHosts);
   Future<void> writeAppHosts(Set<String> hosts) => writeStringSet(_kAppHosts, hosts);

@@ -236,9 +236,10 @@ class LimitsScreen extends StatelessWidget {
           'That covers most YouTube pre-rolls, Twitch and live sport. The player patch skips past what it can.',
     ],
     <String>[
-      'Spotify and Netflix need their own app on iPhone',
-      'Their web players stream DRM protected media. Apple does not give apps Widevine, so a web view cannot '
-          'decrypt it. On Android it usually works. Husk offers the real app instead of a black screen.',
+      'Some streams need their own app on iPhone',
+      'Spotify and Netflix use Widevine. No iOS browser decrypts it, Safari included, so they hand off to the '
+          'real app. Services on FairPlay, which iOS does expose to web views, can play here. If a player still '
+          'refuses, the app offers the real one rather than a black screen.',
     ],
     <String>[
       'Google sign-in finishes in the system browser',

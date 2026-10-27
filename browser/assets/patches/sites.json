@@ -1,6 +1,6 @@
 {
   "_comment": "Husk site patches. Same file is bundled in the app and served by the Cloudflare Worker at /v1/patches.json, so App Mode can be fixed without shipping a new binary. Selectors are CSS only. Scripts are guarded and must never throw or touch page data. Nothing here copies a site's code, assets or copy.",
-  "version": 2,
+  "version": 3,
   "updated": "2026-10-27",
   "sites": [
     {
@@ -121,12 +121,12 @@
         "js": "document.documentElement.classList.add('husk-app');"
       },
       "handoff": {
-        "label": "Spotify needs its own app to play here",
+        "label": "Open the Spotify app",
         "ios": "spotify://",
         "android": "spotify://",
         "storeIos": "https://apps.apple.com/app/spotify-music-and-podcasts/id324684580",
         "storeAndroid": "https://play.google.com/store/apps/details?id=com.spotify.music",
-        "reason": "The web player streams DRM protected audio. Android WebView can decrypt it on most phones, iOS WebView cannot, because Apple does not expose Widevine to apps."
+        "reason": "Spotify streams Widevine protected audio, and no iOS browser or web view can decrypt Widevine. FairPlay, which Apple does expose, is not offered by Spotify's web player."
       },
       "notes": "UI, playlists and search work everywhere. Playback is the one part an embedded browser cannot promise on iPhone."
     },
@@ -164,14 +164,15 @@
         "js": "document.documentElement.classList.add('husk-app');"
       },
       "handoff": {
-        "label": "JioHotstar needs its own app to play here",
+        "label": "Still not playing? Open the app",
         "ios": "jiohotstar://",
         "android": "jiohotstar://",
         "storeIos": "https://apps.apple.com/in/app/jiohotstar/id1478345415",
         "storeAndroid": "https://play.google.com/store/apps/details?id=in.startv.hotstar",
-        "reason": "Live sport and films are DRM protected and the ads are stitched into the stream. Android can usually play it, iOS cannot decrypt it inside a web view."
+        "reason": "If the player does not start, this stream is either Widevine only, or the site has decided this browser is not allowed. FairPlay streams do play in this app on iPhone."
       },
-      "notes": "Browsing and search work everywhere. Playback is the DRM wall described in docs/feasibility.md."
+      "notes": "FairPlay streams can play here, and the app now presents itself the way Safari does, which is what the site checks first. Desktop mode is on by default because the mobile web player is the part JioHotstar gates hardest.",
+      "desktopMode": true
     },
     {
       "id": "soundcloud",
@@ -353,14 +354,14 @@
         "js": "document.documentElement.classList.add('husk-app');"
       },
       "handoff": {
-        "label": "Netflix needs its own app to play here",
+        "label": "Open the Netflix app",
         "ios": "nflx://",
         "android": "nflx://",
         "storeIos": "https://apps.apple.com/app/netflix/id363590051",
         "storeAndroid": "https://play.google.com/store/apps/details?id=com.netflix.mediaclient",
-        "reason": "DRM protected video. Same limit as Spotify on iPhone."
+        "reason": "Netflix serves Widevine to browsers. Apple exposes FairPlay, not Widevine, so playback cannot happen in a web view on iPhone."
       },
-      "notes": "Browse works, playback does not on iOS. Kept as an example of the DRM ceiling."
+      "notes": "Browse works. Playback is the Widevine wall, which is a licensing limit rather than a missing feature."
     },
     {
       "id": "wikipedia",

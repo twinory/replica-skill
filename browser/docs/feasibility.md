@@ -34,7 +34,7 @@ The visible difference between iOS and Android in this design:
 | Element hiding | Yes, injected CSS | Yes, injected CSS |
 | Ads inside a video stream | No | No |
 | User scripts | Yes, WKUserScript | Yes, injected at document start |
-| DRM protected audio and video | No. Apple does not expose Widevine. | Usually yes, on certified devices |
+| DRM protected audio and video | Depends on the DRM. FairPlay streams play in a WKWebView. Widevine never does. | Usually yes, on certified devices |
 | Google sign-in in the page | No. Google blocks web views. | No. Same block. |
 | Background audio | Needs an audio session set natively | Works once the media does not require a gesture |
 
@@ -62,9 +62,22 @@ pre-roll plays, the user blames the app unless it already said so.
 - YouTube and YouTube Music: mobile web with network and element rules, plus a
   guarded player patch. Usable, ads mostly gone, and honest about the ones that
   are not. Sign-in works by routing Google's login page to the system browser.
-- Spotify: the UI works everywhere. Playback needs Widevine, which iOS does not
-  give to apps, so on iPhone the app offers the real Spotify instead of a
-  spinner. This is not a bug to fix; it is a platform wall.
+- Spotify: the UI works everywhere. Playback needs Widevine, and no iOS browser
+  or web view can decrypt Widevine, Safari included. So on iPhone the app offers
+  the real Spotify instead of a spinner. That one is a platform wall.
+- JioHotstar: worth being precise, because an earlier version of this page got it
+  wrong. JioHotstar serves a Safari player, and Safari on iOS means FairPlay.
+  FairPlay is available to a WKWebView too, so the stream is not the blocker. The
+  blocker is the browser check: a web view that introduces itself as an embedded
+  browser gets a "use the app" page before any video exists. The app now sends
+  the user agent Safari sends, and turns on desktop mode for this site, and only
+  offers the real app after the player has actually failed. Brave on the same
+  phone works for the same reason: it is WebKit with a Safari user agent.
+
+The general rule, and the one to apply to the next site: **FairPlay can play in
+an app's web view, Widevine cannot.** Whether a given service plays then comes
+down to the user agent it sniffs and the policy it applies, which is why the app
+ships a desktop switch and a playback probe instead of a list of verdicts.
 
 **"Same efficiency on both platforms."** Same shell, same lists, same
 transitions, each engine native to its platform. Measured in feel: scrolling,

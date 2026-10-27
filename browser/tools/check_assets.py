@@ -240,6 +240,8 @@ def check_patches(report: Report) -> None:
         color = site.get("color", "")
         if not re.fullmatch(r"#[0-9A-Fa-f]{6}", color):
             report.error("%s: color must be #RRGGBB, got %s" % (where, color))
+        if "desktopMode" in site and not isinstance(site["desktopMode"], bool):
+            report.error("%s: desktopMode must be true or false" % where)
         app_mode = site.get("appMode", {})
         if not isinstance(app_mode, dict):
             report.error("%s: appMode must be an object" % where)

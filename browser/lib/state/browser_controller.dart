@@ -9,6 +9,7 @@ import '../core/blockers.dart';
 import '../core/blocklist.dart';
 import '../core/inject.dart';
 import '../core/picker.dart';
+import '../core/playback_probe.dart';
 import '../core/store.dart';
 import '../core/updates.dart';
 import '../core/url_rules.dart';
@@ -55,6 +56,7 @@ class BrowserController extends ChangeNotifier {
   final List<HistoryEntry> history = <HistoryEntry>[];
   final Set<String> shieldsOff = <String>{};
   final Set<String> appHosts = <String>{};
+  final Set<String> desktopHosts = <String>{};
   final Map<String, List<String>> customHides = <String, List<String>>{};
 
   final Map<String, InAppWebViewController> _views = <String, InAppWebViewController>{};
@@ -105,6 +107,7 @@ class BrowserController extends ChangeNotifier {
     shieldsOff.addAll(_store.readShieldsOff());
     appHosts.addAll(_store.readAppHosts());
     customHides.addAll(_store.readHides());
+    desktopHosts.addAll(_store.readDesktopHosts());
     for (final raw in _store.readHistory()) {
       history.add(HistoryEntry.fromJson(raw));
     }
@@ -202,6 +205,7 @@ class BrowserController extends ChangeNotifier {
       url: url,
       appMode: wantsApp,
       shieldsOn: !shieldsOff.contains(site),
+      desktopMode: desktopHosts.contains(site) || (patch?.desktopMode ?? false),
     );
     tabs.add(tab);
     activeId = tab.id;
@@ -449,6 +453,11 @@ class BrowserController extends ChangeNotifier {
         ));
       }
     }
+    scripts.add(UserScript(
+      source: PlaybackProbe.script,
+      injectionTime: UserScriptInjectionTime.AT_DOCUMENT_END,
+      forMainFrameOnly: true,
+    ));
     if (tab.shieldsOn) {
       final player = Injector.playerScript(patchFor(tab.url));
       if (player.isNotEmpty) {
@@ -608,6 +617,37 @@ class BrowserController extends ChangeNotifier {
       );
     }
     notifyListeners();
+  }
+
+  /// The probe reports once per page load. Only a real failure is recorded.
+  void markPlayback(String tabId, String status, String detail) {
+    final tab = tabById(tabId);
+    if (tab == null) {
+      return;
+    }
+    tab.playbackNote = status == 'blocked' ? (detail.isEmpty ? 'player blocked' : detail) : '';
+    notifyListeners();
+  }
+
+  bool isDesktop(String url) => desktopHosts.contains(UrlRules.siteKeyOf(url));
+
+  Future<void> setDesktopMode(String tabId, bool enabled) async {
+    final tab = tabById(tabId);
+    if (tab == null) {
+      return;
+    }
+    final site = UrlRules.siteKeyOf(tab.url);
+    tab.desktopMode = enabled;
+    if (enabled) {
+      desktopHosts.add(site);
+    } else {
+      desktopHosts.remove(site);
+    }
+    await _store.writeDesktopHosts(desktopHosts);
+    // The user agent is fixed when the web view is built, so rebuild it.
+    tab.generation++;
+    notifyListeners();
+    _persistTabs();
   }
 
   void setFullscreen(String tabId, bool on) {

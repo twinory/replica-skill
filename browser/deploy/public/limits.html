@@ -31,11 +31,11 @@
       when it cannot.</span></div></div>
 
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
-      <b>2. DRM protected music and video on iPhone</b>
-      <span>Spotify, Netflix and Prime stream through Widevine. Apple gives apps FairPlay only, and
-      those services do not serve FairPlay to a web view. The result is a spinner or a black screen,
-      not an ad. Husk detects the site, explains it, and offers the real app instead. On Android,
-      Widevine is present in the WebView on certified devices, so it usually plays.</span></div></div>
+      <b>2. Widevine streams on iPhone</b>
+      <span>Two DRM families matter. FairPlay is Apple's, and it works in the WebKit view an iPhone app
+      uses, so services that serve FairPlay can play here. Widevine is Google's, and no iOS browser or
+      web view decrypts it, Safari included. Spotify and Netflix are Widevine, so they hand off to the
+      real app. On Android, Widevine works in the WebView on certified devices.</span></div></div>
 
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
       <b>3. Google sign-in</b>

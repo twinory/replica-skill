@@ -13,6 +13,8 @@ class TabModel {
     this.shieldsOn = true,
     this.failed = false,
     this.generation = 0,
+    this.desktopMode = false,
+    this.playbackNote = '',
   });
 
   final String id;
@@ -29,6 +31,14 @@ class TabModel {
   /// Bumped when filter lists change. The web view is rebuilt under a new key
   /// so new user scripts really run on the next load.
   int generation;
+
+  /// Ask for the desktop site. Remembered per host, because it is a property of
+  /// the site, not of the tab.
+  bool desktopMode;
+
+  /// Set when the probe saw a player fail. Empty means it played or there was
+  /// nothing to play.
+  String playbackNote;
 
   String get label {
     if (title.trim().isNotEmpty) {

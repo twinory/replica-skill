@@ -153,7 +153,11 @@ class MediaSites(unittest.TestCase):
         for site_id in ("spotify", "jiohotstar", "netflix"):
             handoff = self.by_id[site_id].get("handoff")
             self.assertIsNotNone(handoff, site_id)
-            self.assertIn("DRM", handoff["reason"] + " " + self.by_id[site_id]["notes"])
+            text = handoff["reason"] + " " + self.by_id[site_id]["notes"]
+            self.assertTrue(
+                any(word in text for word in ("Widevine", "FairPlay", "DRM")),
+                "%s should say which DRM it hits" % site_id,
+            )
             self.assertTrue(handoff["storeIos"].startswith("https://"))
             self.assertTrue(handoff["storeAndroid"].startswith("https://"))
 
@@ -217,6 +221,64 @@ class ElementPicker(unittest.TestCase):
         source = open(os.path.join(ROOT, "lib", "state", "browser_controller.dart"), encoding="utf-8").read()
         self.assertIn("clean.length > 300", source)
         self.assertIn("clean.contains('{')", source)
+
+
+class PlaybackAndAgents(unittest.TestCase):
+    """An embedded web view announces itself, and some players say no. The
+    app now wears the same user agent the system browser wears, which is what
+    makes FairPlay sites work here the way they work in Brave."""
+
+    def setUp(self):
+        self.agents = open(os.path.join(ROOT, "lib", "core", "user_agents.dart"), encoding="utf-8").read()
+
+    def test_ios_agent_looks_like_safari(self):
+        self.assertIn("Safari/604.1", self.agents)
+        self.assertIn("Version/18.0 Mobile/15E148", self.agents)
+
+    def test_android_agent_drops_the_webview_markers(self):
+        # Only the constants matter here. The file also mentions both markers in
+        # looksEmbedded, which is the code that strips them.
+        # Semicolons are inside the UA string, so bound by the next constant.
+        block = self.agents.split("static const String androidMobile")[1].split("androidDesktop")[0]
+        self.assertIn("Mobile Safari/537.36", block)
+        self.assertNotIn("; wv", block)
+        self.assertNotIn("Version/4.0", block)
+
+    def test_desktop_variants_exist_for_both_platforms(self):
+        for method in ("iosDesktop", "androidDesktop", "forTab"):
+            self.assertIn(method, self.agents)
+
+    def test_site_view_uses_the_agent_for_the_tab(self):
+        source = open(os.path.join(ROOT, "lib", "ui", "site_view.dart"), encoding="utf-8").read()
+        self.assertIn("UserAgents.forTab", source)
+        self.assertIn("desktop: tab.desktopMode", source)
+        self.assertNotIn("applicationNameForUserAgent", source)
+
+    def test_probe_reports_only_a_failure(self):
+        probe = open(os.path.join(ROOT, "lib", "core", "playback_probe.dart"), encoding="utf-8").read()
+        self.assertIn("handlerName = 'huskPlayback'", probe)
+        self.assertIn("MEDIA_ERR_SRC_NOT_SUPPORTED", probe)
+        self.assertIn("player never started", probe)
+        self.assertNotIn("eval(", probe)
+
+    def test_handoff_is_offered_only_after_a_failed_player(self):
+        screen = open(os.path.join(ROOT, "lib", "ui", "browser_screen.dart"), encoding="utf-8").read()
+        self.assertIn("tab.playbackNote.isNotEmpty", screen)
+        self.assertIn("_HandoffChip", screen)
+
+    def test_jiohotstar_asks_for_desktop_and_explains_itself(self):
+        with open(check_assets.PATCHES, encoding="utf-8") as handle:
+            book = json.load(handle)
+        jio = next(s for s in book["sites"] if s["id"] == "jiohotstar")
+        self.assertTrue(jio.get("desktopMode"))
+        self.assertIn("Still not playing", jio["handoff"]["label"])
+        self.assertIn("FairPlay", jio["handoff"]["reason"])
+
+    def test_docs_say_where_the_drm_line_is(self):
+        doc = open(os.path.join(ROOT, "docs", "feasibility.md"), encoding="utf-8").read()
+        self.assertIn("FairPlay streams play in a WKWebView", doc)
+        self.assertIn("Widevine never does", doc)
+        self.assertNotIn("Playback needs Widevine, which iOS does not\n  give to apps", doc)
 
 
 class Naming(unittest.TestCase):
@@ -308,7 +370,10 @@ class DartSources(unittest.TestCase):
     def test_ui_shows_the_limits_page(self):
         source = self._read("lib", "ui", "settings_screen.dart")
         self.assertIn("LimitsScreen", source)
-        self.assertIn("DRM", source)
+        # The page has to name the DRM families, not just say "DRM", because the
+        # difference between them is what decides whether playback works.
+        self.assertIn("Widevine", source)
+        self.assertIn("FairPlay", source)
 
 
 if __name__ == "__main__":

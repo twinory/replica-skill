@@ -169,8 +169,19 @@ The sites this build cares about most, and the honest result on each. Detail in
 | --- | --- | --- | --- |
 | YouTube | Network and element rules remove the display ads, the masthead and the companion slots. The player patch jumps the in stream ad and clicks skip where the control exists. Pre-rolls stitched into the video file still play. | Works. Background audio works on Android; iOS needs the audio session line in `docs/platform-setup.md`. | Mobile site, which already has app style bottom navigation. Sign-in goes to the system browser. |
 | YouTube Music | Premium shelves, promo dialogs and the ad endpoints are removed. | Works, same account as YouTube. | The player CSS in App view pins the now playing bar so it does not float over content. |
-| Spotify | UI is clean, ad slots and the upgrade rails are removed for free accounts. | Android usually plays. iOS cannot: Widevine is not available to apps, so the app offers the real Spotify. | Browsing, search and playlists work everywhere. |
-| JioHotstar | Promo banners and the install rail are removed. The ads inside a live stream are stitched, so they stay. | DRM protected, same wall as Spotify on iOS. Handoff to the real app. | Search and browsing work. This is the one where the limit is most visible. |
+| Spotify | UI is clean, ad slots and the upgrade rails are removed for free accounts. | Android usually plays. iPhone cannot: Spotify is Widevine, and no iOS browser decrypts that. The app offers the real Spotify. | Browsing, search and playlists work everywhere. |
+| JioHotstar | Promo banners and the install rail are removed. Ads stitched into a live stream stay, as they do in every browser. | Plays, in principle: JioHotstar serves FairPlay to Safari, and FairPlay works in the WebKit view an iPhone app uses. The app sends the Safari user agent and turns desktop mode on, then offers the real app only if the player actually fails. | If it does not start on your phone, it is the site's browser check or the stream's DRM, not the ads. The probe tells you which by showing the handoff only after a real failure. |
+
+One thing worth knowing, because it decides playback on every streaming site:
+
+| DRM | Can an app's web view play it? |
+| --- | --- |
+| FairPlay (Apple) | Yes, on iOS 13 and up, with no extra configuration |
+| Widevine (Google) | Never on iOS, including Safari. Yes in Android WebView on certified devices |
+
+That is also why Brave works where an embedded browser does not: on iPhone Brave is
+WebKit with a Safari user agent, which is exactly what `lib/core/user_agents.dart`
+now sends.
 
 ## Layout of the code
 
@@ -180,6 +191,8 @@ The sites this build cares about most, and the honest result on each. Detail in
 | `lib/core/blockers.dart` | Rules to native content blockers, with a rule cap |
 | `lib/core/inject.dart` | Cosmetic CSS, the universal App view profile, the reversible toggle |
 | `lib/core/picker.dart` | Tap to hide an element, and the selector rules that keep it stable |
+| `lib/core/user_agents.dart` | The Safari and Chrome user agents, and why they decide playback |
+| `lib/core/playback_probe.dart` | Watches for a player that never starts, so handoff is earned not guessed |
 | `lib/core/url_rules.dart` | Typed text to URL, site key, auth host detection |
 | `lib/core/updates.dart` | Silent fetch of new lists, never blocks a launch |
 | `lib/state/browser_controller.dart` | Tabs, shields, App view, history, persistence |

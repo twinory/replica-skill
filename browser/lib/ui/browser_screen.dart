@@ -54,9 +54,23 @@ class BrowserScreen extends StatelessWidget {
                         if (!tab.appMode && !tab.isLoading && tab.progress > 0)
                           Positioned(
                             right: 12,
-                            bottom: 14,
+                            bottom: tab.playbackNote.isNotEmpty && patch?.handoff != null ? 64 : 14,
                             child: _AppViewChip(
                               onTap: () => controller.setAppMode(tab.id, true),
+                            ),
+                          ),
+                        if (!tab.isLoading &&
+                            tab.playbackNote.isNotEmpty &&
+                            controller.patchFor(tab.url)?.handoff != null)
+                          Positioned(
+                            right: 12,
+                            bottom: 14,
+                            child: _HandoffChip(
+                              label: controller.patchFor(tab.url)!.handoff!.label,
+                              onTap: () => _openHandoff(
+                                context,
+                                controller.patchFor(tab.url)!.handoff!,
+                              ),
                             ),
                           ),
                         if (tab.appMode) _exitHandle(context, tab),
@@ -166,6 +180,17 @@ class BrowserScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   controller.toggleSiteShields(tab.id);
+                },
+              ),
+              SheetRow(
+                icon: Icons.desktop_windows_outlined,
+                label: tab.desktopMode ? 'Desktop site is on' : 'Request desktop site',
+                detail: tab.desktopMode
+                    ? 'Some players only work this way. Turn it off if a site misbehaves.'
+                    : 'Reloads with a desktop user agent, the same thing a browser menu does',
+                onTap: () {
+                  Navigator.pop(context);
+                  controller.setDesktopMode(tab.id, !tab.desktopMode);
                 },
               ),
               SheetRow(
@@ -333,6 +358,52 @@ class _AppViewChip extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HandoffChip extends StatelessWidget {
+  const _HandoffChip({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(999),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1B1512).withOpacity(0.92),
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(color: Tokens.warn.withOpacity(0.45)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Icon(Icons.play_circle_outline, size: 15, color: Tokens.warn),
+              const SizedBox(width: 7),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 220),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Tokens.warn,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
