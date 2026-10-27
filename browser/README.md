@@ -149,8 +149,10 @@ to `html.husk-app` so leaving App view is clean, and always wrap JS in a try.
 Also shown in the app under Settings, and at `/limits.html`:
 
 - Ads stitched into the video stream cannot be removed. Most YouTube pre-rolls.
-- Spotify and Netflix need Widevine, which iOS does not give apps. Android
-  usually works.
+- Widevine sites (Spotify, Netflix) cannot play on iPhone, because no iOS
+  browser has Widevine. FairPlay sites can. Android usually plays both.
+- A site can refuse a browser it thinks is embedded. Husk sends the same agent
+  the phone's own browser sends, and offers desktop mode when that is not enough.
 - Google refuses its login page inside any web view. That page opens in the
   system browser and the session comes back.
 - Promoted posts with no marker look exactly like normal posts.
