@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veil: what it cannot do</title>
+<meta name="description" content="The honest limits of an ad blocking browser built on the phone's own web engine.">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap" style="display:flex;align-items:center;gap:14px;width:100%">
+    <div class="wordmark"><span class="mark">V</span>Veil</div>
+    <nav class="site"><a href="/">Product</a><a href="/demo.html">Demo</a></nav>
+  </div>
+</header>
+
+<main class="wrap" style="max-width:760px;padding-top:36px;padding-bottom:60px">
+  <h1 style="font-size:clamp(30px,4.4vw,44px)">The honest limits</h1>
+  <p class="lede">No browser can promise zero ads everywhere. These are the cases where the shield
+    stops, so you can decide whether that is good enough before you install it.</p>
+
+  <section class="band" style="padding-top:26px">
+    <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
+      <b>1. Ads inside the video stream</b>
+      <span>Two ways an ad reaches you. Separate request: blockable, and Veil blocks it. Stitched
+      into the same stream as the show: not blockable by any browser, because the bytes are the
+      show. YouTube does this for most pre-rolls, Twitch does it, live sport does it. Veil's player
+      patch fast-forwards and skips the skip button where the site still exposes it, and says so
+      when it cannot.</span></div></div>
+
+    <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
+      <b>2. DRM protected music and video on iPhone</b>
+      <span>Spotify, Netflix and Prime stream through Widevine. Apple gives apps FairPlay only, and
+      those services do not serve FairPlay to a web view. The result is a spinner or a black screen,
+      not an ad. Veil detects the site, explains it, and offers the real app instead. On Android,
+      Widevine is present in the WebView on certified devices, so it usually plays.</span></div></div>
+
+    <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
+      <b>3. Google sign-in</b>
+      <span>Google refuses to render its login page inside any embedded web view, on purpose, since
+      2017. Spoofing the user agent to get around it breaks Google's terms and gets accounts
+      flagged. Veil sends only that page to Safari or Chrome and the cookie comes back to the tab,
+      so you end up signed in without the app pretending to be something it is not.</span></div></div>
+
+    <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
+      <b>4. First party promoted posts</b>
+      <span>A promoted post delivered from the same endpoint as normal posts, with no wrapper
+      element and no label class, is structurally identical to a normal post. Rules cannot tell
+      them apart without breaking the feed. Veil removes the labelled and wrapped ones, which is
+      most of them on most sites.</span></div></div>
+
+    <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
+      <b>5. Sites that refuse web views</b>
+      <span>A site can check the user agent, see a web view, and show "open in the app" instead of
+      content. Veil hides those banners, but it cannot make a site believe it is Safari. Some banks
+      and streaming services do this deliberately.</span></div></div>
+
+    <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
+      <b>6. Lists rot</b>
+      <span>Ad networks rotate domains weekly. The bundled list is a starting point with a few
+      hundred rules, not a maintained service. Point the update URL at your own fork, or the
+      blocking quality will drift down over months. This is the least glamorous and most important
+      part of running a browser.</span></div></div>
+
+    <div class="lim"><span class="dot"></span><div>
+      <b>7. Store rules</b>
+      <span>Apple rejects thin wrappers and apps whose pitch is "ad-free YouTube". Google Play
+      treats ad blocking as sensitive. The safe route is a real browser with its own features,
+      distributed to testers first, with a name that is not someone else's trademark. That is a
+      business problem, not a code problem.</span></div></div>
+  </section>
+
+  <p><a href="/demo.html">See the two transitions in the demo</a> · <a href="/">Back to the product page</a></p>
+</main>
+
+<footer class="site"><div class="wrap"><p class="small">Served by a Cloudflare Worker. No cookies, no third party scripts.</p></div></footer>
+<script src="/site.js"></script>
+</body>
+</html>

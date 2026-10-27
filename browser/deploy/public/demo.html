@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Veil demo</title>
+<meta name="description" content="An interactive demo of Veil: shields strip the ads, App view turns the site into a full screen app.">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="demo-shell">
+  <div class="demo-head">
+    <div class="wordmark"><span class="mark">V</span>Veil</div>
+    <h1>Interactive demo</h1>
+    <div class="oswitch" role="group" aria-label="Choose a phone">
+      <button type="button" data-os="ios" class="on">iPhone</button>
+      <button type="button" data-os="android">Android</button>
+    </div>
+  </div>
+
+  <div class="demo-main">
+    <div class="stage">
+      <div class="phone" id="phone">
+        <div class="statusbar">
+          <span id="clock">9:41</span>
+          <span class="right" id="statusicons">▮▮▮</span>
+        </div>
+        <div class="notch" id="notch"></div>
+        <div class="screen" id="screen">
+          <div class="content" id="content">
+            <div class="view" id="homeView"></div>
+            <div class="view hidden" id="siteView"></div>
+            <div class="appchip" id="appchip" hidden>⤢ <span>App view</span></div>
+            <div class="handle" id="handle" title="Tap to bring the browser back"></div>
+          </div>
+          <div class="chrome" id="chrome"></div>
+          <div class="sheet" id="sheet"><div class="grip"></div><div id="sheetBody"></div></div>
+          <div class="toast" id="toast"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <h3>What to try</h3>
+      <ul>
+        <li>Tap <b>Video</b> on the home screen. The page loads with the ad slot already gone,
+          because the request was blocked before the page was drawn.</li>
+        <li>Tap <b>App view</b> at the bottom right. The browser chrome slides away, the app
+          banner disappears, and a bottom tab bar appears. Tap the small bar at the very top
+          edge to come back.</li>
+        <li>Tap the <b>shield</b> in the address bar to turn blocking off for that site, then
+          reload. The ad slots come back. That is the honest test.</li>
+        <li>Tap <b>Music</b> to see the DRM case. On iPhone the web player cannot decrypt it,
+          so Veil offers the real app instead of a black screen.</li>
+        <li>Switch between <b>iPhone</b> and <b>Android</b>. Same app, same lists, each using the
+          engine that ships with the phone.</li>
+      </ul>
+      <h3>What this demo is</h3>
+      <p>Static HTML that behaves like the Flutter app in <code>browser/lib</code>. It is here so you
+      can feel the two transitions without installing anything. The sites inside it are
+      invented stand-ins, not the real services.</p>
+      <p><a href="/">Back to the product page</a> · <a href="/limits.html">Read the limits</a></p>
+    </div>
+  </div>
+</div>
+<script src="/demo.js"></script>
+</body>
+</html>

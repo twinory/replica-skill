@@ -1,0 +1,279 @@
+{
+  "_comment": "Veil site patches. Same file is bundled in the app and served by the Cloudflare Worker at /v1/patches.json, so App Mode can be fixed without shipping a new binary. Selectors are CSS only. Scripts are guarded and must never throw or touch page data. Nothing here copies a site's code, assets or copy.",
+  "version": 1,
+  "updated": "2026-10-27",
+  "sites": [
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "hosts": ["youtube.com", "m.youtube.com", "www.youtube.com", "youtu.be"],
+      "start": "https://m.youtube.com/",
+      "featured": true,
+      "icon": "play",
+      "color": "#FF0033",
+      "media": true,
+      "cosmetic": [
+        "ytm-promoted-sparkles-web-renderer",
+        "ytm-companion-ad-renderer",
+        "ytm-companion-slot",
+        "ytm-app-promo",
+        "ytm-mealbar-promo-renderer",
+        "ytm-statement-banner-renderer",
+        "ytm-upsell-dialog-renderer",
+        "ytm-item-section-renderer[section-identifier=\"ads\"]",
+        "ytd-display-ad-renderer",
+        "ytd-promoted-sparkles-web-renderer",
+        "ytd-ad-slot-renderer",
+        "ytd-in-feed-ad-layout-renderer",
+        "#masthead-ad",
+        "#player-ads",
+        ".ytp-ad-overlay-container",
+        ".ytp-ad-text-overlay",
+        ".ytp-ad-image-overlay"
+      ],
+      "appMode": {
+        "hide": [
+          ".mobile-promo",
+          ".app-promo",
+          "#app-promo",
+          "ytm-app-promo",
+          "ytm-mealbar-promo-renderer"
+        ],
+        "css": "html.veil-app,html.veil-app body{background:#0f0f0f!important}html.veil-app ytm-app-promo,html.veil-app #app-promo,html.veil-app .mobile-promo{display:none!important}html.veil-app .ytp-chrome-top{opacity:0!important}html.veil-app .ytp-chrome-top:hover{opacity:1!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "player": {
+        "js": "(()=>{if(window.__veilPlayer)return;window.__veilPlayer=1;const tick=()=>{try{const v=document.querySelector('video');if(!v)return;const ad=document.querySelector('.ad-showing,.ad-interrupting,.ytp-ad-player-overlay');if(ad){if(v.duration&&isFinite(v.duration)){v.currentTime=v.duration;}v.muted=true;v.playbackRate=16;const s=document.querySelector('.ytp-ad-skip-button,.ytp-skip-ad-button,.ytp-ad-skip-button-modern,.ytp-ad-overlay-close-button');if(s)s.click();}else if(v.playbackRate===16){v.playbackRate=1;v.muted=false;}}catch(e){}};setInterval(tick,500);})();"
+      },
+      "notes": "Loads the mobile site, which already has app-style bottom navigation. Sign-in is routed to the system browser because Google refuses its login page inside an embedded WebView. Ads inserted into the video stream itself cannot be removed by any browser, including this one."
+    },
+    {
+      "id": "youtube-music",
+      "name": "YT Music",
+      "hosts": ["music.youtube.com"],
+      "start": "https://music.youtube.com/",
+      "featured": true,
+      "icon": "music",
+      "color": "#FF0033",
+      "media": true,
+      "cosmetic": [
+        "ytmusic-mealbar-promo-renderer",
+        "ytmusic-statement-banner-renderer",
+        "ytmusic-popup-container",
+        "ytmusic-carousel-shelf-renderer[aria-label*=\"Premium\"]",
+        "#masthead-ad",
+        "ytmusic-player-wide-bar-renderer tp-yt-paper-dialog"
+      ],
+      "appMode": {
+        "hide": ["ytmusic-mealbar-promo-renderer", "ytmusic-popup-container"],
+        "css": "html.veil-app,html.veil-app body{background:#030303!important}html.veil-app ytmusic-mealbar-promo-renderer{display:none!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "player": {
+        "js": "(()=>{if(window.__veilPlayer)return;window.__veilPlayer=1;const tick=()=>{try{const v=document.querySelector('video');const ad=document.querySelector('.ad-showing,.ad-interrupting');if(v&&ad){if(v.duration&&isFinite(v.duration)){v.currentTime=v.duration;}v.muted=true;}else if(v&&v.playbackRate===16){v.playbackRate=1;v.muted=false;}}catch(e){}};setInterval(tick,600);})();"
+      },
+      "notes": "Same account and library as YouTube. Playback continues in the background on Android."
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "hosts": ["open.spotify.com", "spotify.com"],
+      "start": "https://open.spotify.com/",
+      "featured": true,
+      "icon": "headphones",
+      "color": "#1DB954",
+      "media": true,
+      "cosmetic": [
+        "[data-testid=\"ad-slot\"]",
+        "[data-testid=\"leaderboard-ad\"]",
+        "[data-testid=\"in-feed-ad\"]",
+        "[data-testid=\"upgrade-banner\"]",
+        "[data-testid=\"download-app-banner\"]",
+        "[aria-label=\"Advertisement\"]",
+        ".marketplace-ad",
+        ".download-app-cta"
+      ],
+      "appMode": {
+        "hide": ["[data-testid=\"download-app-banner\"]", "[data-testid=\"upgrade-banner\"]"],
+        "css": "html.veil-app,html.veil-app body{background:#000!important}html.veil-app .Root__top-bar{position:sticky!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "handoff": {
+        "label": "Spotify needs its own app to play here",
+        "ios": "spotify://",
+        "android": "spotify://",
+        "storeIos": "https://apps.apple.com/app/spotify-music-and-podcasts/id324684580",
+        "storeAndroid": "https://play.google.com/store/apps/details?id=com.spotify.music",
+        "reason": "The web player streams DRM protected audio. Android WebView can decrypt it on most phones, iOS WebView cannot, because Apple does not expose Widevine to apps."
+      },
+      "notes": "UI, playlists and search work everywhere. Playback is the one part an embedded browser cannot promise on iPhone."
+    },
+    {
+      "id": "soundcloud",
+      "name": "SoundCloud",
+      "hosts": ["soundcloud.com", "m.soundcloud.com"],
+      "start": "https://soundcloud.com/",
+      "featured": false,
+      "icon": "music",
+      "color": "#FF5500",
+      "media": true,
+      "cosmetic": [".advertisement", ".promoted", "[data-testid=\"ad\"]"],
+      "appMode": {
+        "hide": [".appPromo", ".signupPromo"],
+        "css": "html.veil-app,html.veil-app body{background:#111!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "No DRM, so playback works inside the WebView on both platforms."
+    },
+    {
+      "id": "reddit",
+      "name": "Reddit",
+      "hosts": ["reddit.com", "www.reddit.com", "old.reddit.com"],
+      "start": "https://www.reddit.com/",
+      "featured": true,
+      "icon": "forum",
+      "color": "#FF4500",
+      "media": false,
+      "cosmetic": [
+        "shreddit-ad-post",
+        "[data-testid=\"promoted-post\"]",
+        "shreddit-comments-page-ad",
+        ".promoted-link",
+        "[data-ad-block=\"true\"]"
+      ],
+      "appMode": {
+        "hide": ["faceplate-tracker[noun=\"app_install\"]", "#smartbanner", ".XPromoPopup"],
+        "css": "html.veil-app,html.veil-app body{background:#0f1a1c!important}html.veil-app header{position:sticky!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "Promoted posts are removed by both the network rules and the cosmetic selectors."
+    },
+    {
+      "id": "x",
+      "name": "X",
+      "hosts": ["x.com", "twitter.com", "mobile.twitter.com"],
+      "start": "https://x.com/",
+      "featured": true,
+      "icon": "chat",
+      "color": "#0F1419",
+      "media": false,
+      "cosmetic": ["[data-testid=\"placementTracking\"]", "[data-testid=\"promotedIndicator\"]"],
+      "appMode": {
+        "hide": ["[data-testid=\"BottomBar\"]", "[data-testid=\"sheetDialog\"]"],
+        "css": "html.veil-app,html.veil-app body{background:#000!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "Promoted posts are wrapped in a placementTracking container, so removing that container removes the post, not just its label."
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "hosts": ["instagram.com", "www.instagram.com"],
+      "start": "https://www.instagram.com/",
+      "featured": false,
+      "icon": "camera",
+      "color": "#E1306C",
+      "media": false,
+      "cosmetic": ["article div[role=\"button\"][aria-label=\"Sponsored\"]"],
+      "appMode": {
+        "hide": ["[role=\"dialog\"] div[role=\"button\"]"],
+        "css": "html.veil-app,html.veil-app body{background:#000!important}html.veil-app nav{position:sticky!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "Instagram leans on app install prompts. They are hidden, but Instagram may ask you to sign in again."
+    },
+    {
+      "id": "facebook",
+      "name": "Facebook",
+      "hosts": ["facebook.com", "www.facebook.com", "m.facebook.com"],
+      "start": "https://m.facebook.com/",
+      "featured": false,
+      "icon": "people",
+      "color": "#1877F2",
+      "media": false,
+      "cosmetic": ["[data-pagelet=\"RightRail\"] div[role=\"complementary\"]"],
+      "appMode": {
+        "hide": ["#mobile-header-app-banner", "[data-sigil=\"m-app-banner\"]"],
+        "css": "html.veil-app,html.veil-app body{background:#18191A!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "Feed ads are served from the same endpoints as posts, so only the sidebar placements go. This is the honest ceiling without breaking the feed."
+    },
+    {
+      "id": "twitch",
+      "name": "Twitch",
+      "hosts": ["twitch.tv", "m.twitch.tv"],
+      "start": "https://m.twitch.tv/",
+      "featured": false,
+      "icon": "video",
+      "color": "#9146FF",
+      "media": true,
+      "cosmetic": [".stream-display-ad__container", "[data-a-target=\"video-ad-countdown\"]", ".ad-banner"],
+      "appMode": {
+        "hide": [".m-root__app-banner"],
+        "css": "html.veil-app,html.veil-app body{background:#0e0e10!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "Pre-roll ads are stitched into the stream by Twitch, so they cannot be removed."
+    },
+    {
+      "id": "netflix",
+      "name": "Netflix",
+      "hosts": ["netflix.com", "www.netflix.com"],
+      "start": "https://www.netflix.com/",
+      "featured": false,
+      "icon": "tv",
+      "color": "#E50914",
+      "media": true,
+      "cosmetic": [],
+      "appMode": {
+        "hide": [],
+        "css": "html.veil-app,html.veil-app body{background:#000!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "handoff": {
+        "label": "Netflix needs its own app to play here",
+        "ios": "nflx://",
+        "android": "nflx://",
+        "storeIos": "https://apps.apple.com/app/netflix/id363590051",
+        "storeAndroid": "https://play.google.com/store/apps/details?id=com.netflix.mediaclient",
+        "reason": "DRM protected video. Same limit as Spotify on iPhone."
+      },
+      "notes": "Browse works, playback does not on iOS. Kept as an example of the DRM ceiling."
+    },
+    {
+      "id": "wikipedia",
+      "name": "Wikipedia",
+      "hosts": ["wikipedia.org", "en.wikipedia.org", "m.wikipedia.org"],
+      "start": "https://en.m.wikipedia.org/",
+      "featured": false,
+      "icon": "book",
+      "color": "#54595D",
+      "media": false,
+      "cosmetic": [".frbanner", "#centralNotice"],
+      "appMode": {
+        "hide": [".frbanner", "#centralNotice", ".vector-header-start .mw-checkbox-hack-checkbox"],
+        "css": "html.veil-app .mw-body{padding-top:8px!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "No ads at all. Useful as a clean reading test."
+    },
+    {
+      "id": "hackernews",
+      "name": "HN",
+      "hosts": ["news.ycombinator.com"],
+      "start": "https://news.ycombinator.com/",
+      "featured": false,
+      "icon": "news",
+      "color": "#FF6600",
+      "media": false,
+      "cosmetic": [],
+      "appMode": {
+        "hide": [],
+        "css": "html.veil-app body{max-width:100%!important;padding:0 12px!important}",
+        "js": "document.documentElement.classList.add('veil-app');"
+      },
+      "notes": "A plain page, useful to check that App Mode does not fight sites that already fit the screen."
+    }
+  ]
+}

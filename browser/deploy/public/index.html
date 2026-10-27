@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veil: a quiet browser with App view</title>
+<meta name="description" content="Veil strips ads and trackers before the page paints, then turns any site into a full screen app. One Flutter codebase, each phone's own engine.">
+<meta name="theme-color" content="#07080b">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap" style="display:flex;align-items:center;gap:14px;width:100%">
+    <div class="wordmark"><span class="mark">V</span>Veil</div>
+    <nav class="site">
+      <a href="/demo.html">Demo</a>
+      <a href="/limits.html">Limits</a>
+      <a href="#selfhost">Self host</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Browser + App view</span>
+      <h1>It stops at the ad.<br>Then it becomes <em>the app</em>.</h1>
+      <p class="lede">
+        Load a site and the requests that carry ads and trackers never leave the phone.
+        Then one tap drops the browser chrome: full screen, safe areas handled, the site
+        looking like the app it wishes it shipped.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="/demo.html">Open the demo</a>
+        <a class="btn" href="/download/android">Android build</a>
+        <a class="btn ghost" href="/download/ios">iPhone build</a>
+      </div>
+      <p class="small" style="margin-top:14px">
+        Android installs straight from this Worker. Apple installs only what Apple signed, so the
+        iPhone build goes through TestFlight. No account, no telemetry.
+      </p>
+    </div>
+
+    <div class="stage">
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span class="right">▮▮▮</span></div>
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="content">
+            <div class="view">
+              <div class="home">
+                <div class="brand"><span class="mark">V</span><span class="name">Veil</span></div>
+                <div class="searchpill"><span>⌕</span><span>Search or enter address</span><span class="shield">◆ Shields on</span></div>
+                <div class="sectionhead"><b>Open as an app</b></div>
+                <div class="appgrid">
+                  <div class="apptile"><div class="glyph" style="background:#8ea9ff1f;color:#8ea9ff;border-color:#8ea9ff38">▶</div><span>Video</span></div>
+                  <div class="apptile"><div class="glyph" style="background:#39d98a1f;color:#39d98a;border-color:#39d98a38">♪</div><span>Music</span></div>
+                  <div class="apptile"><div class="glyph" style="background:#ff9f6b1f;color:#ff9f6b;border-color:#ff9f6b38">≡</div><span>Forum</span></div>
+                  <div class="apptile"><div class="glyph" style="background:#c9a0ff1f;color:#c9a0ff;border-color:#c9a0ff38">N</div><span>News</span></div>
+                </div>
+                <div class="sectionhead"><b>Recent</b></div>
+                <div class="recent">
+                  <div class="recentrow"><div class="g" style="background:#8ea9ff1f;color:#8ea9ff">▶</div>
+                    <div class="t"><b>A weekend build, no voiceover</b><span>m.video.example</span></div></div>
+                  <div class="recentrow"><div class="g" style="background:#39d98a1f;color:#39d98a">♪</div>
+                    <div class="t"><b>Late shift playlist</b><span>music.example</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chrome">
+            <div class="progress"><i style="width:100%"></i></div>
+            <div class="chromerow">
+              <button class="iconbtn shield-on">◆</button>
+              <div class="urlbar"><span class="lock">■</span><span class="u">m.video.example</span></div>
+              <button class="iconbtn">↻</button>
+              <div class="tabcount">1</div>
+              <button class="iconbtn">⋮</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid3">
+    <div class="card">
+      <div class="ico">◆</div>
+      <h3>Blocked before the paint</h3>
+      <p>Filter rules become native content blockers: a WKContentRuleList on iPhone, request
+        interception on Android. The ad request never reaches the page, so there is no empty box
+        to cover up later.</p>
+    </div>
+    <div class="card">
+      <div class="ico">⤢</div>
+      <h3>One tap to App view</h3>
+      <p>Chrome slides away, the status bar stays, safe areas are respected, and per site CSS
+        removes the web-only banners. The page is not reloaded, so nothing is lost.</p>
+    </div>
+    <div class="card">
+      <div class="ico">⚙</div>
+      <h3>One codebase, two engines</h3>
+      <p>Flutter around WKWebView on iPhone and Android WebView on Android. Same app, same filters,
+        same behaviour. Native engines mean no engine to rebuild and no Safari licence to fight.</p>
+    </div>
+  </section>
+
+  <section class="band" id="honest">
+    <h2>What it will not do</h2>
+    <p class="sub">Every ad-free browser on the store over-promises, then gets blamed for the first
+      pre-roll. This is the list the app shows on its own settings screen.</p>
+    <div class="list2">
+      <div class="lim"><span class="dot"></span><div><b>Ads baked into the video stream</b>
+        <span>When the ad is in the same file as the show, there is nothing to block. Most YouTube
+        pre-rolls, Twitch and live sport. The player patch skips what it can.</span></div></div>
+      <div class="lim"><span class="dot"></span><div><b>Spotify and Netflix on iPhone</b>
+        <span>Their web players need Widevine. Apple does not expose it to apps. Android usually
+        works. Veil offers the real app instead of a black screen.</span></div></div>
+      <div class="lim"><span class="dot"></span><div><b>Google sign-in inside the page</b>
+        <span>Google refuses its login page in any embedded web view. That one page opens in the
+        system browser and the session comes back.</span></div></div>
+      <div class="lim"><span class="dot"></span><div><b>Promoted posts with no marker</b>
+        <span>Served from the same endpoint as real posts, wrapped in nothing. Rules catch the ones
+        with a wrapper. The rest need a human.</span></div></div>
+    </div>
+    <p class="small" style="margin-top:20px"><a href="/limits.html">The full list, in plain words</a></p>
+  </section>
+
+  <section class="band" id="selfhost">
+    <h2>Yours, on your Worker</h2>
+    <p class="sub">The app never phones home to someone else's server. Filters and App view patches
+      come from a Worker you deploy, so a broken selector can be fixed without a store review.</p>
+<pre><code>cd browser/deploy
+npm install
+npm run dev      # local Worker with the landing page, demo and /v1 endpoints
+npm run deploy   # syncs filters and patches, then publishes to your account
+
+curl https://your-worker.workers.dev/v1/manifest.json</code></pre>
+    <p class="small">Endpoints: <code>/v1/manifest.json</code>, <code>/v1/patches.json</code>,
+      <code>/v1/filters/base.txt</code>, <code>/health</code>. All static, all cacheable, no database.</p>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p><b>Veil</b> is a working name. Change it before you ship: run the trademark and domain
+      checks first. Built on the Replica skill pack.</p>
+    <p class="small">This site sets no cookies and loads no third party scripts. Served by a
+      Cloudflare Worker.</p>
+  </div>
+</footer>
+
+<script src="/site.js"></script>
+</body>
+</html>

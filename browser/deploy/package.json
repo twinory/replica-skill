@@ -1,0 +1,15 @@
+{
+  "name": "veil-updates",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "sync": "python3 ../tools/sync-assets.py",
+    "dev": "npm run sync && wrangler dev",
+    "deploy": "npm run sync && wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}
