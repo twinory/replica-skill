@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/picker.dart';
 import '../core/url_rules.dart';
 import '../models/tab.dart';
 import '../state/browser_controller.dart';
@@ -69,12 +70,30 @@ class _SiteViewState extends State<SiteView> {
         databaseEnabled: true,
         cacheEnabled: true,
         useHybridComposition: true,
-        applicationNameForUserAgent: 'Veil/0.1',
+        applicationNameForUserAgent: 'Husk/0.1',
         contentBlockers: controller.blockersFor(tab),
       ),
       initialUserScripts: UnmodifiableListView<UserScript>(controller.scriptsFor(tab)),
       onWebViewCreated: (InAppWebViewController web) {
         controller.attach(tab.id, web);
+        // The picker reports one selector. Everything else it does stays in the
+        // page, and it cleans up whether or not a selector arrives.
+        web.addJavaScriptHandler(
+          handlerName: Picker.handlerName,
+          callback: (List<dynamic> args) {
+            if (args.isEmpty) {
+              return null;
+            }
+            final payload = args.first;
+            if (payload is Map) {
+              final selector = (payload['selector'] ?? '').toString();
+              if (selector.isNotEmpty) {
+                controller.addCustomHide(tab.id, selector);
+              }
+            }
+            return null;
+          },
+        );
       },
       onLoadStart: (InAppWebViewController web, WebUri? url) {
         controller.onLoadStart(tab.id, url?.toString());

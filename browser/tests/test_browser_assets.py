@@ -75,7 +75,7 @@ class Patches(unittest.TestCase):
     def test_youtube_has_a_player_patch(self):
         youtube = next(s for s in self.book["sites"] if s["id"] == "youtube")
         self.assertIn("ad-showing", youtube["player"]["js"])
-        self.assertIn("veil-app", youtube["appMode"]["css"])
+        self.assertIn("husk-app", youtube["appMode"]["css"])
         self.assertTrue(youtube["featured"])
 
     def test_every_selector_is_css_only(self):
@@ -132,6 +132,153 @@ class AssetsAndDeploy(unittest.TestCase):
         self.assertEqual(report.errors, [])
 
 
+class MediaSites(unittest.TestCase):
+    """App view earns its keep on the four apps this person opens daily."""
+
+    def setUp(self):
+        with open(check_assets.PATCHES, encoding="utf-8") as handle:
+            self.book = json.load(handle)
+        self.by_id = {site["id"]: site for site in self.book["sites"]}
+
+    def test_the_daily_media_sites_all_ship(self):
+        for site_id in ("youtube", "youtube-music", "spotify", "jiohotstar"):
+            self.assertIn(site_id, self.by_id, site_id)
+            site = self.by_id[site_id]
+            self.assertTrue(site["featured"], site_id)
+            self.assertTrue(site["media"], site_id)
+            self.assertTrue(site["appMode"]["css"], site_id)
+            self.assertTrue(site["appMode"]["hide"], site_id)
+
+    def test_streaming_sites_hand_off_instead_of_showing_a_black_screen(self):
+        for site_id in ("spotify", "jiohotstar", "netflix"):
+            handoff = self.by_id[site_id].get("handoff")
+            self.assertIsNotNone(handoff, site_id)
+            self.assertIn("DRM", handoff["reason"] + " " + self.by_id[site_id]["notes"])
+            self.assertTrue(handoff["storeIos"].startswith("https://"))
+            self.assertTrue(handoff["storeAndroid"].startswith("https://"))
+
+    def test_playback_hosts_are_not_blocked_by_the_list(self):
+        for site in self.book["sites"]:
+            for selector in site["cosmetic"]:
+                self.assertNotIn("googlevideo", selector)
+                self.assertNotIn("spotifycdn", selector)
+
+
+class UniversalAppMode(unittest.TestCase):
+    """Any site gets the generic app-banner treatment, patch or not."""
+
+    def setUp(self):
+        self.source = open(os.path.join(ROOT, "lib", "core", "inject.dart"), encoding="utf-8").read()
+
+    def test_selector_list_is_present_and_reasonably_sized(self):
+        block = self.source.split("static const List<String> universal")[1].split("];")[0]
+        count = block.count("'")
+        self.assertGreater(count, 20, "expected a dozen or more universal selectors")
+
+    def test_no_selector_needs_a_modern_engine(self):
+        block = self.source.split("static const List<String> universal")[1].split("];")[0]
+        self.assertNotIn(":has(", block)
+        self.assertNotIn("::", block)
+        self.assertNotIn("{", block)
+
+    def test_universal_rules_are_scoped_to_app_mode(self):
+        self.assertIn("html.husk-app $selector{display:none!important}", self.source)
+
+    def test_custom_hides_come_before_the_list(self):
+        body = self.source.split("static String cosmeticCss(")[1]
+        self.assertLess(body.index("for (final selector in custom)"),
+                        body.index("for (final selector in list.selectorsFor(host))"))
+
+
+class ElementPicker(unittest.TestCase):
+    def setUp(self):
+        self.source = open(os.path.join(ROOT, "lib", "core", "picker.dart"), encoding="utf-8").read()
+
+    def test_picker_reports_only_a_selector(self):
+        self.assertIn("handlerName = 'huskPick'", self.source)
+        self.assertIn("callHandler('huskPick'", self.source)
+        self.assertNotIn("innerHTML = payload", self.source)
+
+    def test_picker_puts_the_page_back(self):
+        for line in ("removeEventListener", "classList.remove", "huskPicker = null"):
+            self.assertIn(line, self.source)
+
+    def test_picker_refuses_generated_class_names(self):
+        for token in ("css-", "sc-", "jsx-"):
+            self.assertIn(token, self.source)
+        self.assertIn("[a-f0-9]{8,}", self.source)
+
+    def test_ui_offers_the_picker_and_an_undo(self):
+        screen = open(os.path.join(ROOT, "lib", "ui", "browser_screen.dart"), encoding="utf-8").read()
+        self.assertIn("startPicker", screen)
+        self.assertIn("clearCustomHides", screen)
+
+    def test_controller_validates_what_comes_back(self):
+        source = open(os.path.join(ROOT, "lib", "state", "browser_controller.dart"), encoding="utf-8").read()
+        self.assertIn("clean.length > 300", source)
+        self.assertIn("clean.contains('{')", source)
+
+
+class Naming(unittest.TestCase):
+    """The rename tool exists so this stays true after the next rename too."""
+
+    def test_product_identifiers_carry_the_new_name(self):
+        pubspec = open(os.path.join(ROOT, "pubspec.yaml"), encoding="utf-8").read()
+        self.assertIn("name: husk", pubspec)
+        for path in ("lib/core/config.dart", "lib/core/inject.dart", "lib/main.dart",
+                     "deploy/wrangler.toml", "deploy/src/index.js", "deploy/package.json"):
+            text = open(os.path.join(ROOT, path), encoding="utf-8").read().lower()
+            self.assertNotIn("veil", text, path)
+        self.assertIn("HUSK_UPDATE_BASE", open(os.path.join(ROOT, "lib/core/config.dart"),
+                                              encoding="utf-8").read())
+
+    def test_rename_tool_leaves_ordinary_words_alone(self):
+        spec = importlib.util.spec_from_file_location(
+            "rename_tool", os.path.join(ROOT, "tools", "rename.py"))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        text = "surveillance unveiled veiling, and a Veil in the middle"
+        updated, count = module.replace_text(text, "Veil", "Husk")
+        self.assertEqual(count, 1)
+        self.assertTrue(updated.startswith("surveillance unveiled veiling"))
+        self.assertIn("a Husk in the middle", updated)
+
+    def test_rename_tool_catches_underscore_compounds(self):
+        spec = importlib.util.spec_from_file_location(
+            "rename_tool2", os.path.join(ROOT, "tools", "rename.py"))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        updated, count = module.replace_text("VEIL_UPDATE_BASE and veil-app", "Veil", "Husk")
+        self.assertEqual(count, 2)
+        self.assertIn("HUSK_UPDATE_BASE", updated)
+        self.assertIn("husk-app", updated)
+
+
+class NameCheckTool(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location(
+            "name_check", os.path.join(ROOT, "tools", "name_check.py"))
+        self.module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.module)
+
+    def test_an_exact_app_store_name_is_crowded(self):
+        hits = [{"name": "Husk", "bundle": "app.x", "seller": "x", "genre": "Utilities", "url": ""}]
+        result = self.module.verdict("Husk", hits, self.module.exact("Husk", hits), [])
+        self.assertEqual(result["level"], "crowded")
+
+    def test_a_loose_match_is_only_usable(self):
+        hits = [{"name": "Husky Notes", "bundle": "app.y", "seller": "y", "genre": "Productivity", "url": ""}]
+        result = self.module.verdict("Husk", hits, self.module.exact("Husk", hits), [])
+        self.assertEqual(result["level"], "usable")
+
+    def test_registered_domains_are_reported(self):
+        domains = [{"domain": "husk.app", "state": "registered", "detail": ""},
+                   {"domain": "huskbrowser.com", "state": "no registration record", "detail": ""}]
+        result = self.module.verdict("Husk", [], [], domains)
+        self.assertEqual(result["domains_registered"], ["husk.app"])
+        self.assertEqual(result["domains_unregistered"], ["huskbrowser.com"])
+
+
 class DartSources(unittest.TestCase):
     def _read(self, *parts):
         with open(os.path.join(ROOT, *parts), encoding="utf-8") as handle:
@@ -150,8 +297,8 @@ class DartSources(unittest.TestCase):
 
     def test_app_mode_is_reversible(self):
         source = self._read("lib", "core", "inject.dart")
-        self.assertIn("classList.remove('veil-app')", source)
-        self.assertIn("veil-appmode-style", source)
+        self.assertIn("classList.remove('husk-app')", source)
+        self.assertIn("husk-appmode-style", source)
 
     def test_google_sign_in_is_sent_to_the_system_browser(self):
         source = self._read("lib", "core", "url_rules.dart")

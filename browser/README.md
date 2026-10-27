@@ -1,14 +1,18 @@
-# Veil
+# Husk
 
 A mobile browser that strips ads and trackers before a page is painted, then
 turns the site into a full screen app with one tap.
+
+The web, out of its shell.
 
 One Flutter codebase. Each phone's own engine: WKWebView on iPhone, Android
 WebView on Android. That is how a two person team gets browser-quality scrolling
 and video on both platforms without adopting a browser engine.
 
-**Veil is a working name.** Clear it before you ship. `docs/store-notes.md` has
-the checks.
+**Husk** replaced the working name Veil, which is already the name of a browser
+on the Play Store. The evidence and the margin still left to check are in
+`docs/naming.md`, along with the two tools that check a name and rename the app
+in one command.
 
 ```
 browser/
@@ -34,10 +38,21 @@ web-only furniture, safe areas are respected, and the back gesture navigates the
 site instead of the browser. Nothing reloads, and leaving puts the page back
 exactly as it was. The choice is remembered per site.
 
-**Twelve site patches** ship in `assets/patches/sites.json`: video, music, forum,
-community, reading, and a few plain pages to prove App view does not fight sites
-that already fit. Each patch is CSS plus a small guarded script. None of them
-touch page data.
+Two layers make App view work on any site, not just the patched ones:
+
+1. **A universal profile.** Every site in App view gets a set of rules that only
+   ever match the strips that sell the native app: smart banners, "open in app"
+   bars, install prompts, download rails. No content selectors, no `:has`.
+2. **A picker.** Menu, then Hide an element here, then tap the thing that should
+   not be there. It is hidden on that site from then on, or every one like it.
+   It persists locally, survives filter updates, and needs no release, no patch
+   and no maintainer. The picker refuses generated class names, because those
+   break on the next deploy.
+
+**Thirteen site patches** ship in `assets/patches/sites.json`, six of them
+featured on the home screen: YouTube, YouTube Music, Spotify, JioHotstar, Reddit
+and X. Each patch is CSS plus a small guarded script, and none of them touch page
+data.
 
 **Update server.** A Cloudflare Worker serves the landing page, an interactive
 demo of the app, and the filter and patch files. A broken selector is fixed by
@@ -62,6 +77,14 @@ python3 tools/check_assets.py
 python3 -m unittest discover -s tests -v
 ```
 
+Three of those tools are about the name and the data, not the app:
+
+```bash
+python3 tools/name_check.py husk --domains husk.app,gethusk.com   # is the name free
+python3 tools/rename.py --from OldName --to NewName               # rename everything
+python3 tools/sync-assets.py                                     # app data into the Worker
+```
+
 ## Publish it
 
 The Worker is the whole backend.
@@ -76,7 +99,7 @@ npm run deploy   # syncs assets, then publishes to your Cloudflare account
 Then point the app at your Worker:
 
 ```bash
-flutter run --dart-define=VEIL_UPDATE_BASE=https://your-worker.workers.dev
+flutter run --dart-define=HUSK_UPDATE_BASE=https://your-worker.workers.dev
 ```
 
 Endpoints: `/v1/manifest.json`, `/v1/patches.json`, `/v1/filters/base.txt`,
@@ -105,8 +128,8 @@ builds a binary. It is not the app.
   "cosmetic": [".ad-slot"],
   "appMode": {
     "hide": [".app-install-banner"],
-    "css": "html.veil-app body{background:#0b0b0b!important}",
-    "js": "document.documentElement.classList.add('veil-app');"
+    "css": "html.husk-app body{background:#0b0b0b!important}",
+    "js": "document.documentElement.classList.add('husk-app');"
   },
   "notes": "What still does not work, in one sentence."
 }
@@ -119,7 +142,7 @@ builds a binary. It is not the app.
 
 Rules for patches, learned from every browser that has done this: never hide a
 container that also holds real content, never touch page data, always scope CSS
-to `html.veil-app` so leaving App view is clean, and always wrap JS in a try.
+to `html.husk-app` so leaving App view is clean, and always wrap JS in a try.
 
 ## The limits, in one place
 
@@ -137,13 +160,26 @@ Also shown in the app under Settings, and at `/limits.html`:
 `docs/feasibility.md` explains why each of those is a wall rather than a bug,
 and what the alternatives cost.
 
+## What the four media apps actually do
+
+The sites this build cares about most, and the honest result on each. Detail in
+`docs/feasibility.md`.
+
+| site | ads | playback | notes |
+| --- | --- | --- | --- |
+| YouTube | Network and element rules remove the display ads, the masthead and the companion slots. The player patch jumps the in stream ad and clicks skip where the control exists. Pre-rolls stitched into the video file still play. | Works. Background audio works on Android; iOS needs the audio session line in `docs/platform-setup.md`. | Mobile site, which already has app style bottom navigation. Sign-in goes to the system browser. |
+| YouTube Music | Premium shelves, promo dialogs and the ad endpoints are removed. | Works, same account as YouTube. | The player CSS in App view pins the now playing bar so it does not float over content. |
+| Spotify | UI is clean, ad slots and the upgrade rails are removed for free accounts. | Android usually plays. iOS cannot: Widevine is not available to apps, so the app offers the real Spotify. | Browsing, search and playlists work everywhere. |
+| JioHotstar | Promo banners and the install rail are removed. The ads inside a live stream are stitched, so they stay. | DRM protected, same wall as Spotify on iOS. Handoff to the real app. | Search and browsing work. This is the one where the limit is most visible. |
+
 ## Layout of the code
 
 | file | job |
 | --- | --- |
 | `lib/core/blocklist.dart` | Adblock parser, no plugin imports, unit testable |
 | `lib/core/blockers.dart` | Rules to native content blockers, with a rule cap |
-| `lib/core/inject.dart` | Cosmetic CSS, App view CSS and the reversible toggle |
+| `lib/core/inject.dart` | Cosmetic CSS, the universal App view profile, the reversible toggle |
+| `lib/core/picker.dart` | Tap to hide an element, and the selector rules that keep it stable |
 | `lib/core/url_rules.dart` | Typed text to URL, site key, auth host detection |
 | `lib/core/updates.dart` | Silent fetch of new lists, never blocks a launch |
 | `lib/state/browser_controller.dart` | Tabs, shields, App view, history, persistence |

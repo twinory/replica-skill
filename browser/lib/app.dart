@@ -6,8 +6,8 @@ import 'ui/browser_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/theme.dart';
 
-class VeilApp extends StatelessWidget {
-  const VeilApp({super.key, required this.controller});
+class HuskApp extends StatelessWidget {
+  const HuskApp({super.key, required this.controller});
 
   final BrowserController controller;
 
@@ -17,7 +17,7 @@ class VeilApp extends StatelessWidget {
       animation: controller,
       builder: (BuildContext context, Widget? _) {
         return MaterialApp(
-          title: 'Veil',
+          title: 'Husk',
           debugShowCheckedModeBanner: false,
           theme: Tokens.light(),
           darkTheme: Tokens.dark(),

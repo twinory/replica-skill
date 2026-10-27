@@ -1,4 +1,4 @@
-name = "veil"
+name = "husk"
 main = "src/index.js"
 compatibility_date = "2026-01-01"
 
@@ -21,5 +21,5 @@ IOS_BUILD_URL = ""
 
 # Optional: point a custom domain at this worker.
 # [[routes]]
-# pattern = "veil.app"
+# pattern = "husk.app"
 # custom_domain = true

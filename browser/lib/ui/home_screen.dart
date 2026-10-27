@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(width: 10),
                         const Text(
-                          'Veil',
+                          'Husk',
                           style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.6),
                         ),
                         const Spacer(),

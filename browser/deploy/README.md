@@ -19,7 +19,7 @@ Git connection has no Python step, and a stale copy is worse than no copy.
 Wrangler prints the URL. Point the app at it:
 
 ```bash
-flutter run --dart-define=VEIL_UPDATE_BASE=https://veil.your-name.workers.dev
+flutter run --dart-define=HUSK_UPDATE_BASE=https://husk.your-name.workers.dev
 ```
 
 ## Endpoints

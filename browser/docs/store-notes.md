@@ -5,15 +5,31 @@ problem. Read it before you spend money on a domain.
 
 ## The name
 
-"Veil" is a working name in this repo. Before you publish:
+The working name was Veil, and it is taken: a browser with that name ships on the
+Play Store today under `com.veil.browser`, and CloudVeil is on the App Store.
+`docs/naming.md` has the full evidence table and the reasoning.
 
-1. Search the App Store, Play Store, and the trademark register in your country
-   and in the US (uspto.gov, TESS). A browser called Veil may already exist.
-2. Check the domain and the handles. `replica-brand/sweep.py` is built for this
-   step: it finds the original's name anywhere in your code before launch.
+The app is now **Husk**, bundle id `app.husk.browser`. What that pass established
+and what it did not:
+
+- Established: no browser named Husk was found on either store. The only App
+  Store hit is HUSK Nutrition. `husk.app` is registered by someone else and
+  expires in 2027, so plan on `huskbrowser.com` or `gethusk.com`.
+- Not established: a trademark search. HUSK is used by a nutrition app, a
+  restaurant group and a bedding brand. None are browsers, but classes 9 and 42
+  are where this is decided. Run USPTO TESS, EUIPO and the India IP office
+  before spending on a launch.
+
+Before publishing:
+
+1. Search the Play Store for the name by hand. There is no public API for it.
+2. Run `python3 tools/name_check.py husk --domains yourdomain.com` again closer
+   to launch. Store names churn monthly.
 3. Do not put another company's name in the app name, subtitle, keywords, or
-   screenshots. "Ad-free YouTube" in a listing is both a trademark problem and
-   an instant review rejection.
+   screenshots. "Ad-free YouTube" as a listing is a trademark problem and a
+   review rejection in one line.
+4. If any check comes back dirty, run `name_check.py` on Larch, then
+   `python3 tools/rename.py --from Husk --to Larch`. That is now one command.
 
 ## Apple App Store
 

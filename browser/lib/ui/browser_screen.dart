@@ -169,6 +169,27 @@ class BrowserScreen extends StatelessWidget {
                 },
               ),
               SheetRow(
+                icon: Icons.visibility_off_outlined,
+                label: 'Hide an element here',
+                detail: 'Tap anything that should not be on this page. It stays hidden on this site.',
+                onTap: () {
+                  Navigator.pop(context);
+                  controller.startPicker(tab.id);
+                },
+              ),
+              if (controller.hidesFor(tab.url).isNotEmpty)
+                SheetRow(
+                  icon: Icons.undo,
+                  label: controller.hidesFor(tab.url).length == 1
+                      ? 'Show the element you hid'
+                      : 'Show the ${controller.hidesFor(tab.url).length} elements you hid',
+                  detail: 'Your picks on this site, not the filter list',
+                  onTap: () {
+                    Navigator.pop(context);
+                    controller.clearCustomHides(tab.id);
+                  },
+                ),
+              SheetRow(
                 icon: Icons.copy_all,
                 label: 'Copy link',
                 onTap: () {

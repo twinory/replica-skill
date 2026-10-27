@@ -14,25 +14,71 @@ class Injector {
 
   /// Element hiding rules, one per line so a selector the engine rejects
   /// cannot take the rest of the list down with it.
-  static String cosmeticCss(BlockList list, String host, {int maxSelectors = 1200}) {
-    final selectors = list.selectorsFor(host).take(maxSelectors);
+  static String cosmeticCss(
+    BlockList list,
+    String host, {
+    int maxSelectors = 1200,
+    List<String> custom = const <String>[],
+  }) {
     final out = StringBuffer();
-    for (final selector in selectors) {
+    var budget = maxSelectors;
+    for (final selector in custom) {
+      if (budget-- <= 0) {
+        break;
+      }
+      out.writeln('$selector{display:none!important}');
+    }
+    for (final selector in list.selectorsFor(host)) {
+      if (budget-- <= 0) {
+        break;
+      }
       out.writeln('$selector{display:none!important}');
     }
     return out.toString();
   }
 
-  /// The CSS App Mode adds. Everything is scoped to `html.veil-app`.
+  /// Overlays that exist only to sell the native app. Safe on any site: these
+  /// are marketing strips, never content. Every selector is a plain attribute
+  /// match, because `:has` is missing on older engines.
+  static const List<String> universal = <String>[
+    '#smartbanner',
+    '.smartbanner',
+    '.smart-app-banner',
+    '[class*="smartbanner"]',
+    '[id*="app-install"]',
+    '[class*="app-install"]',
+    '[class*="install-banner"]',
+    '[class*="app-banner"]',
+    '[class*="appBanner"]',
+    '[class*="open-in-app"]',
+    '[class*="openInApp"]',
+    '[class*="download-app"]',
+    '[class*="downloadApp"]',
+    '[class*="get-the-app"]',
+    '[class*="getTheApp"]',
+    '[class*="app-promo"]',
+    '[class*="appPromo"]',
+    '[class*="mobile-app-banner"]',
+    '[data-testid*="app-banner"]',
+    '[data-testid*="open-in-app"]',
+    '.branch-banner',
+    '#branch-banner-iframe',
+    '.adjust-banner',
+  ];
+
+  /// The CSS App Mode adds. Everything is scoped to `html.husk-app`.
   static String appModeCss(SitePatch? patch) {
     final out = StringBuffer()
-      ..writeln('html.veil-app{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}')
-      ..writeln('html.veil-app body{overscroll-behavior-y:none;}')
+      ..writeln('html.husk-app{overscroll-behavior:none;-webkit-tap-highlight-color:transparent;}')
+      ..writeln('html.husk-app body{overscroll-behavior-y:none;}')
       // Some sites pin a cookie bar or app banner to the bottom edge, which
       // sits on top of the page once the browser bar is gone.
-      ..writeln('html.veil-app body{padding-bottom:0!important;}');
+      ..writeln('html.husk-app body{padding-bottom:0!important;}');
+    for (final selector in universal) {
+      out.writeln('html.husk-app $selector{display:none!important}');
+    }
     for (final selector in patch?.appHide ?? const <String>[]) {
-      out.writeln('html.veil-app $selector{display:none!important}');
+      out.writeln('html.husk-app $selector{display:none!important}');
     }
     out.write(patch?.appCss ?? '');
     return out.toString();
@@ -45,7 +91,7 @@ class Injector {
     return '''
 (function(){
   try {
-    var id = 'veil-appmode-style';
+    var id = 'husk-appmode-style';
     var style = document.getElementById(id);
     if (!style) {
       style = document.createElement('style');
@@ -55,12 +101,12 @@ class Injector {
     style.textContent = ${jsonEncode(css)};
     var root = document.documentElement;
     if (${enabled ? 'true' : 'false'}) {
-      root.classList.add('veil-app');
-      root.setAttribute('data-veil', 'app');
+      root.classList.add('husk-app');
+      root.setAttribute('data-husk', 'app');
       $extra
     } else {
-      root.classList.remove('veil-app');
-      root.removeAttribute('data-veil');
+      root.classList.remove('husk-app');
+      root.removeAttribute('data-husk');
     }
     return true;
   } catch (e) { return false; }
@@ -78,15 +124,15 @@ class Injector {
   }
 
   /// Small document start script: inline video so it does not jump to the
-  /// native player, and a `data-veil` marker so a site's own CSS can key off
+  /// native player, and a `data-husk` marker so a site's own CSS can key off
   /// it if it wants to. Wrapped so a failure never reaches the page console.
   static String bootstrapScript() {
     return r'''
 (function(){
-  if (window.__veilBooted) { return; }
-  window.__veilBooted = true;
+  if (window.__huskBooted) { return; }
+  window.__huskBooted = true;
   try {
-    document.documentElement.setAttribute('data-veil', '1');
+    document.documentElement.setAttribute('data-husk', '1');
     var inline = function(){
       var videos = document.querySelectorAll('video');
       for (var i = 0; i < videos.length; i++) {

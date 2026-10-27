@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:veil/core/blocklist.dart';
+import 'package:husk/core/blocklist.dart';
 
 void main() {
   group('Adblock translation', () {

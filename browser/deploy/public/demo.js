@@ -1,4 +1,4 @@
-/* Veil demo. No dependencies, no network calls, no tracking. */
+/* Husk demo. No dependencies, no network calls, no tracking. */
 
 (function () {
   'use strict';
@@ -122,7 +122,7 @@
 
     el.homeView.innerHTML =
       '<div class="home">' +
-        '<div class="brand"><span class="mark">V</span><span class="name">Veil</span></div>' +
+        '<div class="brand"><span class="mark">V</span><span class="name">Husk</span></div>' +
         '<div class="searchpill" id="fakesearch">' +
           '<span>\u2315</span><span>Search or enter address</span>' +
           '<span class="shield">' + (state.shields ? '\u25C6 Shields on' : '\u25C7 Shields off') + '</span>' +
@@ -196,7 +196,7 @@
 
     var drm = state.os === 'ios' && !state.appMode
       ? '<div class="drm"><b>Playback would fail here.</b><br>The web player streams DRM protected audio. ' +
-        'iOS does not give apps Widevine, so Veil offers the real app instead of a black screen. ' +
+        'iOS does not give apps Widevine, so Husk offers the real app instead of a black screen. ' +
         'On Android this usually plays.</div>'
       : '';
 
@@ -421,7 +421,7 @@
 
     if (kind === 'menu') {
       body =
-        '<h4>' + esc(state.view === 'site' ? SITES[state.site].name : 'Veil') + '</h4>' +
+        '<h4>' + esc(state.view === 'site' ? SITES[state.site].name : 'Husk') + '</h4>' +
         '<div class="sheetrow" data-act="appmode"><span class="ic">\u2922</span><div>App view' +
           '<div class="sub">Full screen, no browser chrome, remembered for this site</div></div>' +
           '<span class="right">' + (state.appMode ? 'On' : 'Off') + '</span></div>' +

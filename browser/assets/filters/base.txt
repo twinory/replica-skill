@@ -1,4 +1,4 @@
-! Veil filter list. Adblock Plus syntax subset.
+! Husk filter list. Adblock Plus syntax subset.
 ! Parsed by lib/core/blocklist.dart. Keep it to what that parser understands:
 !   ||domain^            block any URL on that domain
 !   ||domain/path^       block that path

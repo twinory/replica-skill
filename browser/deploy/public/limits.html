@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Veil: what it cannot do</title>
+<title>Husk: what it cannot do</title>
 <meta name="description" content="The honest limits of an ad blocking browser built on the phone's own web engine.">
 <link rel="stylesheet" href="/styles.css">
 </head>
@@ -11,7 +11,7 @@
 
 <header class="site">
   <div class="wrap" style="display:flex;align-items:center;gap:14px;width:100%">
-    <div class="wordmark"><span class="mark">V</span>Veil</div>
+    <div class="wordmark"><span class="mark">V</span>Husk</div>
     <nav class="site"><a href="/">Product</a><a href="/demo.html">Demo</a></nav>
   </div>
 </header>
@@ -24,9 +24,9 @@
   <section class="band" style="padding-top:26px">
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
       <b>1. Ads inside the video stream</b>
-      <span>Two ways an ad reaches you. Separate request: blockable, and Veil blocks it. Stitched
+      <span>Two ways an ad reaches you. Separate request: blockable, and Husk blocks it. Stitched
       into the same stream as the show: not blockable by any browser, because the bytes are the
-      show. YouTube does this for most pre-rolls, Twitch does it, live sport does it. Veil's player
+      show. YouTube does this for most pre-rolls, Twitch does it, live sport does it. Husk's player
       patch fast-forwards and skips the skip button where the site still exposes it, and says so
       when it cannot.</span></div></div>
 
@@ -34,27 +34,27 @@
       <b>2. DRM protected music and video on iPhone</b>
       <span>Spotify, Netflix and Prime stream through Widevine. Apple gives apps FairPlay only, and
       those services do not serve FairPlay to a web view. The result is a spinner or a black screen,
-      not an ad. Veil detects the site, explains it, and offers the real app instead. On Android,
+      not an ad. Husk detects the site, explains it, and offers the real app instead. On Android,
       Widevine is present in the WebView on certified devices, so it usually plays.</span></div></div>
 
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
       <b>3. Google sign-in</b>
       <span>Google refuses to render its login page inside any embedded web view, on purpose, since
       2017. Spoofing the user agent to get around it breaks Google's terms and gets accounts
-      flagged. Veil sends only that page to Safari or Chrome and the cookie comes back to the tab,
+      flagged. Husk sends only that page to Safari or Chrome and the cookie comes back to the tab,
       so you end up signed in without the app pretending to be something it is not.</span></div></div>
 
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
       <b>4. First party promoted posts</b>
       <span>A promoted post delivered from the same endpoint as normal posts, with no wrapper
       element and no label class, is structurally identical to a normal post. Rules cannot tell
-      them apart without breaking the feed. Veil removes the labelled and wrapped ones, which is
+      them apart without breaking the feed. Husk removes the labelled and wrapped ones, which is
       most of them on most sites.</span></div></div>
 
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>
       <b>5. Sites that refuse web views</b>
       <span>A site can check the user agent, see a web view, and show "open in the app" instead of
-      content. Veil hides those banners, but it cannot make a site believe it is Safari. Some banks
+      content. Husk hides those banners, but it cannot make a site believe it is Safari. Some banks
       and streaming services do this deliberately.</span></div></div>
 
     <div class="lim" style="margin-bottom:22px"><span class="dot"></span><div>

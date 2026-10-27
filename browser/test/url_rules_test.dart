@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:veil/core/url_rules.dart';
+import 'package:husk/core/url_rules.dart';
 
 void main() {
   const search = 'https://duckduckgo.com/?q=%s';

@@ -12,14 +12,15 @@ class Store {
 
   final SharedPreferences _prefs;
 
-  static const String _kSettings = 'veil.settings';
-  static const String _kTabs = 'veil.tabs';
-  static const String _kHistory = 'veil.history';
-  static const String _kShieldsOff = 'veil.shieldsOff';
-  static const String _kAppHosts = 'veil.appHosts';
-  static const String _kAppTabs = 'veil.appTabs';
-  static const String _kPatches = 'veil.patches';
-  static const String _kFilters = 'veil.filters';
+  static const String _kSettings = 'husk.settings';
+  static const String _kTabs = 'husk.tabs';
+  static const String _kHistory = 'husk.history';
+  static const String _kShieldsOff = 'husk.shieldsOff';
+  static const String _kAppHosts = 'husk.appHosts';
+  static const String _kAppTabs = 'husk.appTabs';
+  static const String _kPatches = 'husk.patches';
+  static const String _kFilters = 'husk.filters';
+  static const String _kHides = 'husk.hides';
 
   static Future<Store> open() async => Store(await SharedPreferences.getInstance());
 
@@ -103,8 +104,32 @@ class Store {
   String? readFiltersCache() => _prefs.getString(_kFilters);
   Future<void> writeFiltersCache(String text) => _prefs.setString(_kFilters, text);
 
-  String? readMeta(String key) => _prefs.getString('veil.meta.$key');
-  Future<void> writeMeta(String key, String value) => _prefs.setString('veil.meta.$key', value);
+  /// Element picks, keyed by site. A person's own choice, so it survives
+  /// filter updates and a reinstall of nothing else.
+  Map<String, List<String>> readHides() {
+    final raw = _prefs.getString(_kHides);
+    if (raw == null || raw.isEmpty) {
+      return <String, List<String>>{};
+    }
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+      final out = <String, List<String>>{};
+      decoded.forEach((String key, dynamic value) {
+        if (value is List) {
+          out[key] = value.map((e) => e.toString()).toList();
+        }
+      });
+      return out;
+    } catch (_) {
+      return <String, List<String>>{};
+    }
+  }
+
+  Future<void> writeHides(Map<String, List<String>> hides) =>
+      _prefs.setString(_kHides, jsonEncode(hides));
+
+  String? readMeta(String key) => _prefs.getString('husk.meta.$key');
+  Future<void> writeMeta(String key, String value) => _prefs.setString('husk.meta.$key', value);
 
   Future<void> clearBrowsingData() async {
     await _prefs.remove(_kHistory);

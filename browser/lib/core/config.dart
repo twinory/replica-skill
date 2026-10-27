@@ -6,8 +6,8 @@ class AppConfig {
   AppConfig._();
 
   static const String updateBase = String.fromEnvironment(
-    'VEIL_UPDATE_BASE',
-    defaultValue: 'https://veil-updates.example.workers.dev',
+    'HUSK_UPDATE_BASE',
+    defaultValue: 'https://husk-updates.example.workers.dev',
   );
 
   static const String patchesUrl = '$updateBase/v1/patches.json';

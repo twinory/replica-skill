@@ -247,8 +247,8 @@ def check_patches(report: Report) -> None:
         css = app_mode.get("css", "")
         if css.count("{") != css.count("}"):
             report.error("%s: appMode.css has unbalanced braces" % where)
-        if "veil-app" not in css and css.strip():
-            report.error("%s: appMode.css must be scoped to html.veil-app" % where)
+        if "husk-app" not in css and css.strip():
+            report.error("%s: appMode.css must be scoped to html.husk-app" % where)
         js = app_mode.get("js", "")
         if "</script" in js.lower():
             report.error("%s: appMode.js must not contain a closing script tag" % where)

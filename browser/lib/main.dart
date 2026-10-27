@@ -27,5 +27,5 @@ Future<void> main() async {
   final controller = BrowserController(store);
   await controller.init();
 
-  runApp(VeilApp(controller: controller));
+  runApp(HuskApp(controller: controller));
 }

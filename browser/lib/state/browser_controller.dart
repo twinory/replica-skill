@@ -8,6 +8,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../core/blockers.dart';
 import '../core/blocklist.dart';
 import '../core/inject.dart';
+import '../core/picker.dart';
 import '../core/store.dart';
 import '../core/updates.dart';
 import '../core/url_rules.dart';
@@ -54,6 +55,7 @@ class BrowserController extends ChangeNotifier {
   final List<HistoryEntry> history = <HistoryEntry>[];
   final Set<String> shieldsOff = <String>{};
   final Set<String> appHosts = <String>{};
+  final Map<String, List<String>> customHides = <String, List<String>>{};
 
   final Map<String, InAppWebViewController> _views = <String, InAppWebViewController>{};
   final Set<String> _fullscreen = <String>{};
@@ -102,6 +104,7 @@ class BrowserController extends ChangeNotifier {
     settings = _store.readSettings();
     shieldsOff.addAll(_store.readShieldsOff());
     appHosts.addAll(_store.readAppHosts());
+    customHides.addAll(_store.readHides());
     for (final raw in _store.readHistory()) {
       history.add(HistoryEntry.fromJson(raw));
     }
@@ -429,12 +432,17 @@ class BrowserController extends ChangeNotifier {
         forMainFrameOnly: true,
       ),
     ];
-    if (tab.shieldsOn && settings.hideCosmetic) {
-      final css = Injector.cosmeticCss(effectiveList, UrlRules.hostOf(tab.url));
+    final custom = hidesFor(tab.url);
+    if (custom.isNotEmpty || (tab.shieldsOn && settings.hideCosmetic)) {
+      final css = Injector.cosmeticCss(
+        tab.shieldsOn && settings.hideCosmetic ? effectiveList : BlockList.empty,
+        UrlRules.hostOf(tab.url),
+        custom: custom,
+      );
       if (css.isNotEmpty) {
         scripts.add(UserScript(
           source: "(function(){try{var s=document.createElement('style');"
-              "s.id='veil-cosmetic';s.textContent=${jsonEncode(css)};"
+              "s.id='husk-cosmetic';s.textContent=${jsonEncode(css)};"
               "(document.head||document.documentElement).appendChild(s);}catch(e){}})();",
           injectionTime: UserScriptInjectionTime.AT_DOCUMENT_START,
           forMainFrameOnly: false,
@@ -498,6 +506,81 @@ class BrowserController extends ChangeNotifier {
     settings = next;
     _effectiveCache = null;
     await _store.writeSettings(next);
+    notifyListeners();
+  }
+
+  // --------------------------------------------------------------- picking
+
+  List<String> hidesFor(String url) {
+    final site = UrlRules.siteKeyOf(url);
+    return customHides[site] ?? const <String>[];
+  }
+
+  int get customHideCount =>
+      customHides.values.fold(0, (int sum, List<String> list) => sum + list.length);
+
+  int get customHideSites => customHides.keys.length;
+
+  /// Turns the page into a picker. The script reports one selector back and
+  /// puts everything it changed back, whether or not the person picks.
+  Future<void> startPicker(String tabId) async {
+    final view = _views[tabId];
+    if (view == null) {
+      return;
+    }
+    await view.evaluateJavascript(source: Picker.script());
+  }
+
+  Future<void> addCustomHide(String tabId, String selector) async {
+    final tab = tabById(tabId);
+    if (tab == null) {
+      return;
+    }
+    final clean = selector.trim();
+    if (clean.isEmpty || clean.length > 300 || clean.contains('{') || clean.contains('}')) {
+      return;
+    }
+    final site = UrlRules.siteKeyOf(tab.url);
+    if (site.isEmpty) {
+      return;
+    }
+    final list = customHides.putIfAbsent(site, () => <String>[]);
+    if (!list.contains(clean)) {
+      list.add(clean);
+    }
+    await _store.writeHides(customHides);
+    // Apply now, so the thing disappears under the person's finger.
+    final css = list.map((String rule) => '$rule{display:none!important}').join('\n');
+    await _views[tabId]?.evaluateJavascript(source: '''
+(function(){try{
+  var id='husk-picked';
+  var style=document.getElementById(id);
+  if(!style){style=document.createElement('style');style.id=id;
+    (document.head||document.documentElement).appendChild(style);}
+  style.textContent=${jsonEncode(css)};
+  return true;
+}catch(e){return false;}})();
+''');
+    notifyListeners();
+  }
+
+  Future<void> clearCustomHides(String tabId) async {
+    final tab = tabById(tabId);
+    if (tab == null) {
+      return;
+    }
+    final site = UrlRules.siteKeyOf(tab.url);
+    customHides.remove(site);
+    await _store.writeHides(customHides);
+    await applyShieldsChange(tabId);
+  }
+
+  Future<void> clearAllCustomHides() async {
+    customHides.clear();
+    await _store.writeHides(customHides);
+    for (final tab in List<TabModel>.of(tabs)) {
+      await applyShieldsChange(tab.id);
+    }
     notifyListeners();
   }
 

@@ -86,6 +86,21 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
 
+              if (controller.customHideCount > 0)
+                SheetRow(
+                  icon: Icons.visibility_off_outlined,
+                  label: controller.customHideCount == 1
+                      ? '1 element hidden by you'
+                      : '${controller.customHideCount} elements hidden by you',
+                  detail: 'On ${controller.customHideSites} '
+                      '${controller.customHideSites == 1 ? 'site' : 'sites'}. '
+                      'App view hides the rest for you.',
+                  trailing: TextButton(
+                    onPressed: controller.clearAllCustomHides,
+                    child: const Text('Show all'),
+                  ),
+                ),
+
               const SectionLabel('App view'),
               _toggle(
                 'Remember per site',
@@ -127,7 +142,7 @@ class SettingsScreen extends StatelessWidget {
               const SectionLabel('About'),
               const SheetRow(
                 icon: Icons.info_outline,
-                label: 'Veil 0.1.0',
+                label: 'Husk 0.1.0',
                 detail: 'Flutter shell, the system web engine, no telemetry',
               ),
               SheetRow(
@@ -223,11 +238,11 @@ class LimitsScreen extends StatelessWidget {
     <String>[
       'Spotify and Netflix need their own app on iPhone',
       'Their web players stream DRM protected media. Apple does not give apps Widevine, so a web view cannot '
-          'decrypt it. On Android it usually works. Veil offers the real app instead of a black screen.',
+          'decrypt it. On Android it usually works. Husk offers the real app instead of a black screen.',
     ],
     <String>[
       'Google sign-in finishes in the system browser',
-      'Google refuses its login page inside any embedded web view. Veil sends that one page to Safari or Chrome '
+      'Google refuses its login page inside any embedded web view. Husk sends that one page to Safari or Chrome '
           'and the session comes back to the tab.',
     ],
     <String>[
@@ -237,7 +252,7 @@ class LimitsScreen extends StatelessWidget {
     ],
     <String>[
       'Sites can still detect this browser',
-      'A page can see it is in a web view and refuse to play, or ask you to install its app. Veil hides app '
+      'A page can see it is in a web view and refuse to play, or ask you to install its app. Husk hides app '
           'banners but cannot make a site believe it is Safari.',
     ],
     <String>[

@@ -1,5 +1,5 @@
 /**
- * Veil update server and site.
+ * Husk update server and site.
  *
  * Three jobs, in this order of importance:
  *   1. /v1/manifest.json tells an installed app where its lists live.
@@ -66,7 +66,7 @@ function text(body, maxAge = 0) {
 
 function manifest(env, url) {
   return {
-    name: 'veil-updates',
+    name: 'husk-updates',
     version: 1,
     generatedAt: new Date().toISOString(),
     minAppVersion: env.MIN_APP_VERSION || '0.1.0',
@@ -113,7 +113,7 @@ export default {
     const path = url.pathname.replace(/\/+$/, '') || '/';
 
     if (path === '/health') {
-      return json({ ok: true, service: 'veil-updates', time: new Date().toISOString() });
+      return json({ ok: true, service: 'husk-updates', time: new Date().toISOString() });
     }
 
     if (path === '/v1/manifest.json') {

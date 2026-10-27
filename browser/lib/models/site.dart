@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// A site that Veil knows how to promote into an app view.
+/// A site that Husk knows how to promote into an app view.
 ///
 /// Loaded from `assets/patches/sites.json` and optionally replaced by a newer
 /// copy fetched from the update endpoint, so App Mode can be repaired without
